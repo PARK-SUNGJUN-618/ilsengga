@@ -1,3 +1,4 @@
+import Header from "./components/Header";
 import CategorySection from "./components/CategorySection";
 
 const categories = [
@@ -75,38 +76,41 @@ const categories = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      <section className="border-b bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-20 text-center">
-          <p className="text-sm font-medium text-gray-500">
-            JaLiSim · Japan Life, Simplified.
-          </p>
+    <>
+      <Header />
+      <main className="min-h-screen bg-gray-50">
+        <section className="border-b bg-white">
+          <div className="mx-auto max-w-6xl px-4 py-20 text-center">
+            <p className="text-sm font-medium text-gray-500">
+              JaLiSim · Japan Life, Simplified.
+            </p>
 
-          <h1 className="mt-4 text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            일생가
-          </h1>
+            <h1 className="mt-4 text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+              일생가
+            </h1>
 
-          <p className="mt-5 text-xl font-medium text-gray-700">
-            일본 생활 가능하세요?
-          </p>
+            <p className="mt-5 text-xl font-medium text-gray-700">
+              일본 생활 가능하세요?
+            </p>
 
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-gray-500 sm:text-base">
-            일본에서 살아가면서 한 번쯤 필요했던 계산기와 생활 도구를 한곳에서
-            쉽게 이용해보세요.
-          </p>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-gray-500 sm:text-base">
+              일본에서 살아가면서 한 번쯤 필요했던 계산기와 생활 도구를 한곳에서
+              쉽게 이용해보세요.
+            </p>
+          </div>
+        </section>
+
+        <div className="mx-auto max-w-6xl px-4 pb-20">
+          {categories.map((category) => (
+            <CategorySection
+              key={category.title}
+              title={category.title}
+              description={category.description}
+              tools={category.tools}
+            />
+          ))}
         </div>
-      </section>
-
-      <div className="mx-auto max-w-6xl px-4 pb-20">
-        {categories.map((category) => (
-          <CategorySection
-            key={category.title}
-            title={category.title}
-            description={category.description}
-            tools={category.tools}
-          />
-        ))}
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
