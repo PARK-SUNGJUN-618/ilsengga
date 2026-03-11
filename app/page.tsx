@@ -94,8 +94,8 @@ export default function Home() {
             </p>
 
             <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-gray-500 sm:text-base">
-              일본에서 살아가면서 한 번쯤 필요했던 계산기와 생활 도구를 한곳에서
-              쉽게 이용해보세요.
+              일본에서 살아가면서 한 번쯤 필요했던 생활 도구를 한곳에서 쉽게
+              이용해보세요.
             </p>
           </div>
         </section>
