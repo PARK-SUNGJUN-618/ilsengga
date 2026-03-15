@@ -1,4 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "이직 연봉 비교",
+  description:
+    "현재 연봉과 이직 후 연봉을 비교하고, 실제로 얼마나 차이가 나는지 계산해보세요.",
+};
 
 export default function JobChangePage() {
   return (
