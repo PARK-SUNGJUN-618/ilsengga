@@ -10,7 +10,7 @@ const categories = [
         title: "일본 월급 실수령액 계산기",
         description: "월급을 입력하면 예상 실수령액을 확인할 수 있어요.",
         href: "/tools/salary",
-        badge: "준비중",
+        badge: "NEW",
       },
       {
         title: "일본 연봉 계산기",
