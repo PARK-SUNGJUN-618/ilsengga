@@ -38,6 +38,10 @@ export const metadata: Metadata = {
     follow: true,
   },
 
+  verification: {
+    google: "ooUq3pvp035NuyiOwzCh0PPo6ww7rn6is_D5UczFbrM",
+  },
+
   openGraph: {
     title: "일생가 - 일본 생활 가능하세요?",
     description: "일본 생활에 필요한 생활 도구를 한곳에서 쉽게 이용해보세요.",
