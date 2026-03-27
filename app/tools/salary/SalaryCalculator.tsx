@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import { calculateSalary, PREFECTURES, type SalaryResult } from "@/lib/salary";
 
 function formatYen(value: number) {
@@ -13,6 +14,7 @@ function Input({
   onChange,
   suffix,
   min = 0,
+  max,
   step = 10000,
 }: {
   label: string;
@@ -20,6 +22,7 @@ function Input({
   onChange: (value: number) => void;
   suffix?: string;
   min?: number;
+  max?: number;
   step?: number;
 }) {
   return (
@@ -31,6 +34,7 @@ function Input({
           type="number"
           value={value}
           min={min}
+          max={max}
           step={step}
           onChange={(e) => onChange(Number(e.target.value))}
           className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-right text-lg outline-none transition focus:border-gray-700 focus:ring-2 focus:ring-gray-200"
@@ -103,7 +107,7 @@ export default function SalaryCalculator() {
 
   return (
     <div className="space-y-6">
-      {/* 입력 */}
+      {/* 입력 영역 */}
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-6">
           <h2 className="text-lg font-bold text-gray-900">
@@ -111,7 +115,7 @@ export default function SalaryCalculator() {
           </h2>
 
           <p className="mt-1 text-sm text-gray-500">
-            일반적인 회사원 기준의 예상 실수령액입니다.
+            일본의 일반적인 회사원 기준으로 예상 실수령액을 계산합니다.
           </p>
         </div>
 
@@ -139,6 +143,7 @@ export default function SalaryCalculator() {
               onChange={setBonusPayments}
               suffix="회"
               min={1}
+              max={12}
               step={1}
             />
           )}
@@ -184,8 +189,8 @@ export default function SalaryCalculator() {
             </select>
 
             <p className="mt-2 text-xs leading-5 text-gray-500">
-              협회けんぽ 기준입니다. 건강보험조합 가입자는 실제 보험료가 다를 수
-              있습니다.
+              협회けんぽ 가입자를 기준으로 계산합니다. 건강보험조합 가입자는
+              실제 금액이 다를 수 있습니다.
             </p>
           </div>
 
@@ -208,12 +213,13 @@ export default function SalaryCalculator() {
             />
 
             <p className="mt-2 text-xs leading-5 text-gray-500">
-              주민세는 전년도 소득을 기준으로 계산되므로, 올해 연봉과 다를 수
-              있습니다.
+              주민세는 기본적으로 전년도 소득을 기준으로 계산되기 때문에
+              입력합니다.
             </p>
           </div>
 
           <button
+            type="button"
             onClick={handleCalculate}
             className="w-full rounded-xl bg-gray-900 px-5 py-4 font-bold text-white transition hover:bg-gray-700 active:scale-[0.99]"
           >
@@ -225,7 +231,6 @@ export default function SalaryCalculator() {
       {/* 결과 */}
       {result && (
         <div className="space-y-6">
-          {/* 메인 결과 */}
           <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div className="bg-gray-900 px-6 py-10 text-center text-white">
               <p className="text-sm text-gray-300">예상 월 실수령액</p>
@@ -235,7 +240,7 @@ export default function SalaryCalculator() {
               </p>
 
               <p className="mt-3 text-sm text-gray-400">
-                연간 실수령액을 12개월로 나눈 평균
+                연간 예상 실수령액 ÷ 12
               </p>
             </div>
 
@@ -294,7 +299,7 @@ export default function SalaryCalculator() {
                     />
 
                     <ResultRow
-                      label="주민세 예상액"
+                      label="주민세"
                       value={result.residentTax}
                       negative
                     />
@@ -317,7 +322,7 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                <div className="mt-6 rounded-xl bg-gray-50 p-5">
+                <div className="rounded-xl bg-gray-50 p-5">
                   <ResultRow
                     label="연간 예상 실수령액"
                     value={result.annualTakeHome}
@@ -328,7 +333,6 @@ export default function SalaryCalculator() {
             </div>
           </div>
 
-          {/* 설명 */}
           <div className="rounded-2xl border border-gray-200 bg-white p-6">
             <h2 className="text-lg font-bold text-gray-900">
               계산 결과를 어떻게 봐야 하나요?
@@ -341,27 +345,25 @@ export default function SalaryCalculator() {
               </p>
 
               <p>
-                일본의 주민세는 전년도 소득을 기준으로 계산되기 때문에 이직이나
-                취업 첫해에는 실제 급여명세서와 차이가 발생할 수 있습니다.
+                일본의 주민세는 전년도 소득을 기준으로 계산되기 때문에 취업
+                첫해나 이직 시에는 실제 급여명세서와 차이가 발생할 수 있습니다.
               </p>
 
               <p>
-                또한 실제 건강보험과 후생연금은 표준보수월액 및 표준상여액을
-                기준으로 계산되므로 이 계산 결과는
-                <strong className="text-gray-900">예상치</strong>
-                입니다.
+                건강보험과 후생연금은 표준보수월액, 보너스는 표준상여액을 이용해
+                계산하기 때문에 단순히 월급에 보험료율을 곱하는 방식보다 실제
+                급여에 가까운 예상치를 제공합니다.
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* 주의사항 */}
       <div className="rounded-xl bg-gray-50 p-5 text-xs leading-6 text-gray-500">
-        ※ 본 계산 결과는 2026년 일본의 세금 및 사회보험 제도를 바탕으로 일반적인
-        회사원 조건을 가정한 예상치입니다. 실제 금액은 건강보험조합,
-        표준보수월액, 표준상여액, 부양가족의 조건, 각종 공제 및 전년도 소득 등에
-        따라 달라질 수 있습니다.
+        ※ 본 계산 결과는 2026년도 일본의 세금 및 사회보험 제도를 기준으로 한
+        예상치입니다. 실제 금액은 건강보험조합 가입 여부, 표준보수월액,
+        표준상여액, 부양가족의 조건, 각종 공제 및 전년도 소득 등에 따라 달라질
+        수 있습니다.
       </div>
     </div>
   );
