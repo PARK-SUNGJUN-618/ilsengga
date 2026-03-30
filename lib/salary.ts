@@ -28,10 +28,25 @@ export type SalaryResult = {
 };
 
 /**
- * 2026년도 협회けんぽ 건강보험료율
+ * ============================================================
+ * 2026년 협회けんぽ 건강보험료율
+ * ============================================================
  *
- * 2026년 3월분(4월 납부분)부터 적용되는 보험료율.
+ * 2026년도 기준
+ *
+ * 건강보험:
+ * - 가나가와 9.92%
+ *
+ * 개호보험:
+ * - 2026년 2월분까지: 1.59%
+ * - 2026년 3월분부터: 1.62%
+ *
+ * 자녀·육아지원금:
+ * - 2026년 4월분부터: 0.23%
+ *
+ * 모두 근로자와 회사가 절반씩 부담.
  */
+
 export const HEALTH_RATES: Record<string, number> = {
   北海道: 0.1028,
   青森: 0.0985,
@@ -85,25 +100,35 @@ export const HEALTH_RATES: Record<string, number> = {
 export const PREFECTURES = Object.keys(HEALTH_RATES);
 
 /**
- * 2026년도 보험 관련 상수
+ * ============================================================
+ * 保険료율
+ * ============================================================
  */
+
 const PENSION_RATE = 0.183;
-const NURSING_RATE = 0.0162;
+
+// 2026년 2월분까지
+const NURSING_RATE_2025 = 0.0159;
+
+// 2026년 3월분부터
+const NURSING_RATE_2026 = 0.0162;
+
+// 2026년 4월분부터
 const CHILD_CARE_SUPPORT_RATE = 0.0023;
 
-/**
- * 2026년도 일반 사업 고용보험 근로자 부담
- */
-const EMPLOYMENT_INSURANCE_RATE = 0.005;
+// 고용보험
+//
+// 2025년도 일반사업 근로자 부담: 0.55%
+// 2026년도 일반사업 근로자 부담: 0.50%
+const EMPLOYMENT_INSURANCE_RATE_2025 = 0.0055;
+const EMPLOYMENT_INSURANCE_RATE_2026 = 0.005;
 
 /**
+ * ============================================================
  * 표준보수월액
- *
- * 일반적인 급여 구간을 기준으로 한 예상 계산.
- *
- * 실제 보험료는 협회けんぽ의 보험료액표와
- * 실제 표준보수월액 결정 방식에 따라 달라질 수 있음.
+ * ============================================================
  */
+
 function getStandardMonthlyRemuneration(monthlySalary: number) {
   if (monthlySalary <= 63_000) return 58_000;
   if (monthlySalary <= 73_000) return 68_000;
@@ -144,82 +169,102 @@ function getStandardMonthlyRemuneration(monthlySalary: number) {
 }
 
 /**
- * 보너스 표준상여액
- *
- * 실제 제도에서는 1,000엔 미만을 버림.
+ * ============================================================
+ * 표준상여액
+ * ============================================================
  */
+
 function getStandardBonus(bonus: number) {
   return Math.floor(bonus / 1_000) * 1_000;
 }
 
 /**
+ * ============================================================
  * 2026년 급여소득공제
+ * ============================================================
  *
- * 2025년분 이후 급여소득공제 개정 반영.
+ * 2026년 소득세 기준.
+ *
+ * 220만원 초과 구간에서는 기존 방식과 동일하며,
+ * 2026년에는 급여소득공제 최저보장액이 74만원으로 변경됨.
  */
+
 function calculateEmploymentIncomeDeduction(annualIncome: number) {
-  if (annualIncome <= 650_000) {
-    return annualIncome;
+  if (annualIncome <= 0) {
+    return 0;
   }
 
+  // 190만원 이하
   if (annualIncome <= 1_900_000) {
-    return 650_000;
+    return Math.max(740_000, annualIncome * 0.3 + 80_000);
   }
 
+  // 190만원 초과 ~ 360만원 이하
   if (annualIncome <= 3_600_000) {
-    const base = Math.floor(annualIncome / 4_000) * 1_000;
-
-    return base * 0.3 + 80_000;
+    return annualIncome * 0.3 + 80_000;
   }
 
+  // 360만원 초과 ~ 660만원 이하
   if (annualIncome <= 6_600_000) {
-    const base = Math.floor(annualIncome / 4_000) * 1_000;
-
-    return base * 0.2 + 440_000;
+    return annualIncome * 0.2 + 440_000;
   }
 
+  // 660만원 초과 ~ 850만원 이하
   if (annualIncome <= 8_500_000) {
     return annualIncome * 0.1 + 1_100_000;
   }
 
+  // 850만원 초과
   return 1_950_000;
 }
 
 /**
+ * ============================================================
  * 2026년 소득세 기초공제
+ * ============================================================
  *
- * 2026년분 기준.
+ * 2026년분 소득세.
+ *
+ * 합계소득금액 기준:
+ *
+ * 132만원 이하             → 104만원
+ * 132만원 초과~336만원     → 88만원
+ * 336만원 초과~489만원     → 68만원
+ * 489만원 초과~655만원     → 67만원
+ * 655만원 초과~2350만원    → 62만원
+ * ...
  */
-function calculateBasicDeduction(income: number) {
-  if (income <= 1_320_000) {
-    return 950_000;
+
+function calculateIncomeTaxBasicDeduction(totalIncome: number) {
+  if (totalIncome <= 1_320_000) {
+    return 1_040_000;
   }
 
-  if (income <= 3_360_000) {
+  if (totalIncome <= 3_360_000) {
     return 880_000;
   }
 
-  if (income <= 4_890_000) {
+  if (totalIncome <= 4_890_000) {
     return 680_000;
   }
 
-  if (income <= 6_550_000) {
-    return 630_000;
+  if (totalIncome <= 6_550_000) {
+    return 670_000;
   }
 
-  if (income <= 23_500_000) {
-    return 580_000;
+  if (totalIncome <= 23_500_000) {
+    return 620_000;
   }
 
-  if (income <= 24_000_000) {
+  if (totalIncome <= 24_000_000) {
     return 480_000;
   }
 
-  if (income <= 24_500_000) {
+  if (totalIncome <= 24_500_000) {
     return 320_000;
   }
 
-  if (income <= 25_000_000) {
+  if (totalIncome <= 25_000_000) {
     return 160_000;
   }
 
@@ -227,12 +272,12 @@ function calculateBasicDeduction(income: number) {
 }
 
 /**
- * 소득세
+ * ============================================================
+ * 소득세 계산
+ * ============================================================
  */
+
 function calculateIncomeTax(taxableIncome: number) {
-  /**
-   * 과세소득은 1,000엔 미만 절사
-   */
   const income = Math.floor(taxableIncome / 1_000) * 1_000;
 
   if (income <= 0) {
@@ -258,18 +303,32 @@ function calculateIncomeTax(taxableIncome: number) {
   }
 
   /**
-   * 復興特別所得税 2.1%
+   * 2026년분은 현재 부흥특별소득세 2.1% 적용.
    *
-   * 실제 연말정산에서는 100엔 미만 절사 등이 적용되므로
-   * 여기서는 예상값으로 계산.
+   * 1.1%로 변경되는 것은 2027년분부터.
    */
-  return Math.max(0, tax * 1.021);
+  return Math.max(0, Math.floor(tax * 1.021));
 }
 
 /**
+ * ============================================================
  * 월급 사회보험료
+ * ============================================================
+ *
+ * 2026년:
+ *
+ * 건강보험
+ * → 12개월 모두 2026년 요율
+ *
+ * 개호보험
+ * → 1~2월: 1.59%
+ * → 3~12월: 1.62%
+ *
+ * 자녀·육아지원금
+ * → 4~12월: 0.23%
  */
-function calculateMonthlySocialInsurance(
+
+function calculateMonthlySocialInsurance2026(
   monthlySalary: number,
   age: number,
   prefecture: string,
@@ -278,29 +337,30 @@ function calculateMonthlySocialInsurance(
 
   const healthRate = HEALTH_RATES[prefecture] ?? HEALTH_RATES["東京"];
 
-  /**
-   * 건강보험
-   * 회사와 본인이 절반씩 부담
-   */
-  const healthInsurance = (standard * healthRate) / 2;
+  // 건강보험은 2026년 가나가와의 경우 9.92%
+  const monthlyHealth = (standard * healthRate) / 2;
 
-  /**
-   * 介護保険
-   *
-   * 40~64세만 부담
-   */
-  const nursingInsurance =
-    age >= 40 && age <= 64 ? (standard * NURSING_RATE) / 2 : 0;
+  // 2026년 개호보험
+  const monthlyNursing2025 =
+    age >= 40 && age <= 64 ? (standard * NURSING_RATE_2025) / 2 : 0;
 
-  /**
-   * 후생연금
-   */
-  const pension = (standard * PENSION_RATE) / 2;
+  const monthlyNursing2026 =
+    age >= 40 && age <= 64 ? (standard * NURSING_RATE_2026) / 2 : 0;
 
-  /**
-   * 子ども・子育て支援金
-   */
-  const childCareSupport = (standard * CHILD_CARE_SUPPORT_RATE) / 2;
+  // 1~2월은 2025년도 개호보험료율
+  const nursingInsurance = monthlyNursing2025 * 2 + monthlyNursing2026 * 10;
+
+  // 2026년 4월부터 자녀·육아지원금
+  const monthlyChildCare = (standard * CHILD_CARE_SUPPORT_RATE) / 2;
+
+  const childCareSupport = monthlyChildCare * 9;
+
+  // 후생연금
+  const monthlyPension = (standard * PENSION_RATE) / 2;
+
+  const pension = monthlyPension * 12;
+
+  const healthInsurance = monthlyHealth * 12;
 
   return {
     standard,
@@ -312,8 +372,22 @@ function calculateMonthlySocialInsurance(
 }
 
 /**
+ * ============================================================
  * 보너스 사회보험료
+ * ============================================================
+ *
+ * 보너스는 1,000엔 미만 절사 후 계산.
+ *
+ * 실제로는 지급일에 따라 보험료율 적용 시점이 달라질 수 있기
+ * 때문에, 이 계산기에서는 2026년도 기준을 적용한 예상치로 계산.
+ *
+ * 건강보험 / 개호보험 / 자녀·육아지원금:
+ * → 근로자 절반 부담
+ *
+ * 후생연금:
+ * → 근로자 절반 부담
  */
+
 function calculateBonusSocialInsurance(
   bonus: number,
   age: number,
@@ -335,7 +409,7 @@ function calculateBonusSocialInsurance(
   const healthInsurance = (standardBonus * healthRate) / 2;
 
   const nursingInsurance =
-    age >= 40 && age <= 64 ? (standardBonus * NURSING_RATE) / 2 : 0;
+    age >= 40 && age <= 64 ? (standardBonus * NURSING_RATE_2026) / 2 : 0;
 
   const pension = (standardBonus * PENSION_RATE) / 2;
 
@@ -350,43 +424,59 @@ function calculateBonusSocialInsurance(
 }
 
 /**
- * 급여수입 → 급여소득공제 후 급여소득
+ * ============================================================
+ * 2025년 주민세용 급여소득 계산
+ * ============================================================
  *
- * 중요:
- * 이전 코드에서는 이 함수가 "급여소득공제액"을 반환하고 있었음.
+ * 2026년도 주민세는 기본적으로 2025년 소득을 기준으로 계산.
  *
- * 예:
- * 576만엔
- * → 급여소득공제 약 159.2만엔
- * → 실제 급여소득 416.8만엔
+ * 따라서 previousAnnualIncome을 이용한다.
  *
- * 따라서 여기서는 최종 "급여소득"을 반환.
+ * 5.76M처럼 일반적인 소득 구간에서는:
+ *
+ * 연봉 × 20% + 44만원
+ *
+ * 을 사용.
  */
-function calculateSalaryIncome(annualIncome: number) {
-  const deduction = calculateEmploymentIncomeDeduction(annualIncome);
 
-  return Math.max(0, annualIncome - deduction);
+function calculatePreviousYearSalaryIncome(annualIncome: number) {
+  if (annualIncome <= 0) {
+    return 0;
+  }
+
+  if (annualIncome <= 1_900_000) {
+    return Math.max(650_000, annualIncome * 0.3 + 80_000);
+  }
+
+  if (annualIncome <= 3_600_000) {
+    return Math.floor(annualIncome * 0.3 + 80_000);
+  }
+
+  if (annualIncome <= 6_600_000) {
+    return Math.floor(annualIncome * 0.2 + 440_000);
+  }
+
+  if (annualIncome <= 8_500_000) {
+    return Math.floor(annualIncome * 0.1 + 1_100_000);
+  }
+
+  return 1_950_000;
 }
 
 /**
- * 전년도 사회보험료 예상
+ * ============================================================
+ * 2025년 사회보험료 예상
+ * ============================================================
  *
- * 주민세는 전년도 소득을 기준으로 계산하기 때문에
- * 전년도 사회보험료도 필요하다.
+ * 주민세는 전년도 소득을 기준으로 하므로,
+ * previousAnnualIncome에 대한 전년도 사회보험료를
+ * 별도로 추정한다.
  *
- * 하지만 사용자는 전년도 연봉만 입력하므로
- * 실제 전년도 급여명세서를 알 수 없다.
- *
- * 따라서:
- *
- * 전년도 연봉 ÷ 12
- * → 평균 월급으로 가정
- * → 표준보수월액 추정
- * → 건강보험/후생연금 등을 계산
- *
- * 실제 주민세와 약간 차이가 날 수 있다.
+ * 입력 화면에서는 전년도 보너스/실제 보험료를 받지 않으므로
+ * "전년도 연봉 ÷ 12를 월급으로 받았다"라고 가정.
  */
-function calculateEstimatedPreviousSocialInsurance(
+
+function calculatePreviousYearSocialInsurance(
   previousAnnualIncome: number,
   age: number,
   prefecture: string,
@@ -395,58 +485,67 @@ function calculateEstimatedPreviousSocialInsurance(
     return 0;
   }
 
-  /**
-   * 전년도 연봉을 12개월로 나누어
-   * 평균 월급으로 간주한다.
-   */
-  const estimatedMonthlySalary = previousAnnualIncome / 12;
+  const previousMonthlySalary = previousAnnualIncome / 12;
 
-  const monthlyInsurance = calculateMonthlySocialInsurance(
-    estimatedMonthlySalary,
-    age,
-    prefecture,
-  );
+  const standard = getStandardMonthlyRemuneration(previousMonthlySalary);
 
-  const healthInsurance = monthlyInsurance.healthInsurance * 12;
-
-  const nursingInsurance = monthlyInsurance.nursingInsurance * 12;
-
-  const pension = monthlyInsurance.pension * 12;
+  const healthRate = HEALTH_RATES[prefecture] ?? HEALTH_RATES["東京"];
 
   /**
-   * 고용보험은 전년도 총급여 기준으로 추정
+   * 2025년도:
+   *
+   * 건강보험: 해당 지역 요율
+   * 개호보험: 1.59%
+   * 후생연금: 18.3%
+   * 고용보험: 일반사업 0.55%
    */
-  const employmentInsurance = previousAnnualIncome * EMPLOYMENT_INSURANCE_RATE;
 
-  const childCareSupport = monthlyInsurance.childCareSupport * 12;
+  const healthInsurance = ((standard * healthRate) / 2) * 12;
 
-  return (
-    healthInsurance +
-    nursingInsurance +
-    pension +
-    employmentInsurance +
-    childCareSupport
-  );
+  const nursingInsurance =
+    age >= 40 && age <= 64 ? ((standard * NURSING_RATE_2025) / 2) * 12 : 0;
+
+  const pension = ((standard * PENSION_RATE) / 2) * 12;
+
+  const employmentInsurance =
+    previousAnnualIncome * EMPLOYMENT_INSURANCE_RATE_2025;
+
+  return healthInsurance + nursingInsurance + pension + employmentInsurance;
 }
 
 /**
- * 2026년도 주민세 계산
+ * ============================================================
+ * 주민세 계산
+ * ============================================================
  *
- * 주민세는 기본적으로 전년도 소득을 기준으로 계산한다.
+ * 2026년도 주민세
+ * = 2025년 소득을 기준으로 계산
  *
- * 여기서는:
+ * 기본적인 구조:
  *
- * 전년도 연봉
- * → 급여소득
- * → 전년도 사회보험료 추정
- * → 주민세 공제
- * → 과세소득
- * → 소득할
- * → 균등할
- * → 森林環境税
+ * 급여소득
+ * - 사회보험료
+ * - 기초공제 43만원
+ * - 부양공제
+ * = 과세소득
  *
- * 순서로 계산한다.
+ * 이후:
+ * 시·군·구민세 + 도·현민세
+ *
+ * 가나가와현:
+ * - 정령지정도시: 8% + 2.025%
+ * - 그 외: 6% + 4.025%
+ *
+ * 합계는 10.025%.
+ *
+ * 여기에 조정공제 및 균등할,
+ * 산림환경세 등을 반영.
+ *
+ * 주의:
+ * 실제 주민세는 시/구별 세액공제 및
+ * 개인별 공제 등에 따라 달라질 수 있다.
  */
+
 function calculateResidentTax(
   previousAnnualIncome: number,
   age: number,
@@ -458,23 +557,27 @@ function calculateResidentTax(
   }
 
   /**
-   * ① 전년도 급여소득
+   * 전년도 급여소득
    */
-  const previousSalaryIncome = calculateSalaryIncome(previousAnnualIncome);
+  const previousSalaryIncome =
+    previousAnnualIncome >= 0
+      ? previousAnnualIncome -
+        calculatePreviousYearSalaryIncome(previousAnnualIncome)
+      : 0;
 
   /**
-   * ② 전년도 사회보험료 예상
+   * 전년도 사회보험료
    */
-  const previousSocialInsurance = calculateEstimatedPreviousSocialInsurance(
+  const previousSocialInsurance = calculatePreviousYearSocialInsurance(
     previousAnnualIncome,
     age,
     prefecture,
   );
 
   /**
-   * ③ 주민세 기초공제
+   * 주민세 기초공제
    *
-   * 합계소득 2,400만엔 이하라면 43만엔.
+   * 2026년도 주민세 기준 43만원.
    */
   const residentBasicDeduction =
     previousSalaryIncome <= 24_000_000
@@ -486,120 +589,92 @@ function calculateResidentTax(
           : 0;
 
   /**
-   * ④ 부양공제
+   * 일반 부양가족 공제
    *
-   * 일반적인 부양가족을 단순화해서 계산.
-   *
-   * 실제로는 연령에 따라
-   * 일반扶養 / 特定扶養 / 老人扶養 등
-   * 공제액이 달라진다.
+   * 현재 UI에서는 부양가족의 나이를 구분하지 않으므로
+   * 일반적인 16세 이상 부양가족이라고 가정.
    */
   const residentDependentDeduction = dependents * 330_000;
 
   /**
-   * ⑤ 주민세 과세소득
+   * 주민세 과세소득
    *
-   * 1,000엔 미만 절사.
+   * 실제 주민세는 1,000엔 미만 절사.
    */
-  const residentTaxableIncomeRaw =
-    previousSalaryIncome -
-    previousSocialInsurance -
-    residentBasicDeduction -
-    residentDependentDeduction;
-
-  const residentTaxableIncome = Math.max(
+  const residentTaxableIncomeBeforeRounding = Math.max(
     0,
-    Math.floor(residentTaxableIncomeRaw / 1_000) * 1_000,
+    previousSalaryIncome -
+      previousSocialInsurance -
+      residentBasicDeduction -
+      residentDependentDeduction,
   );
+
+  const residentTaxableIncome =
+    Math.floor(residentTaxableIncomeBeforeRounding / 1_000) * 1_000;
 
   if (residentTaxableIncome <= 0) {
     return 0;
   }
 
   /**
-   * ⑥ 주민세 소득할
+   * 가나가와현의 주민세 소득할 합계
    *
-   * 대부분의 지역은 합계 약 10%.
-   *
-   * 神奈川県은 2026년도까지
-   * 수원환경보전세 때문에 0.025%가 추가된다.
-   *
-   * 일반 지역:
-   * 10.000%
-   *
-   * 神奈川県:
+   * 2026년도:
    * 10.025%
+   *
+   * = 시·군·구민세 + 현민세
    */
-  const residentIncomeRate = prefecture === "神奈川" ? 0.10025 : 0.1;
-
-  const incomeBasedTax = residentTaxableIncome * residentIncomeRate;
+  const residentIncomeTax = residentTaxableIncome * 0.10025;
 
   /**
-   * ⑦ 調整控除
+   * 조정공제
    *
-   * 주민세와 소득세의 인적공제 차이를
-   * 조정하기 위한 공제.
+   * 소득세와 주민세의 인적공제 차이를 반영.
    *
-   * 이 계산기는 일반적인 회사원을 기준으로
-   * 기초공제 + 일반 부양가족을 단순 반영한다.
+   * 이 계산기에서는 가장 일반적인
+   * 기초공제 차이 25만원을 기준으로 예상.
    */
-  const personalDeductionDifference = 50_000 + dependents * 50_000;
+  const basicDeductionDifference = 680_000 - 430_000;
 
-  let adjustmentDeductionBase: number;
+  let adjustmentDeduction = 0;
 
   if (residentTaxableIncome <= 2_000_000) {
-    adjustmentDeductionBase = Math.min(
-      personalDeductionDifference,
-      residentTaxableIncome,
-    );
+    adjustmentDeduction = Math.max(50_000, basicDeductionDifference) * 0.05;
   } else {
-    adjustmentDeductionBase = Math.max(
-      50_000,
-      personalDeductionDifference - (residentTaxableIncome - 2_000_000),
-    );
+    const difference =
+      basicDeductionDifference - (residentTaxableIncome - 2_000_000);
+
+    adjustmentDeduction = Math.max(50_000, difference) * 0.05;
   }
 
-  const adjustmentDeduction = adjustmentDeductionBase * 0.05;
-
   /**
-   * ⑧ 균등할
+   * 균등할
    *
-   * 기본:
-   * 시정촌 3,000
-   * 도도부현 1,000
+   * 일반적인 가나가와현 기준 예상값:
    *
-   * + 森林環境税 1,000
+   * 현민세 1,300엔
+   * 시·군·구민세 3,000엔
+   * 산림환경세 1,000엔
    *
-   * 神奈川県은 2026년도까지
-   * 水源環境保全税 300엔 추가.
+   * = 5,300엔
+   *
+   * 단, 요코하마 등 일부 지자체는 별도의 초과과세가
+   * 있기 때문에 실제 고지액과 차이가 날 수 있음.
    */
-  const municipalityPerCapitaTax = 3_000;
+  const residentPerCapitaTax = 5_300;
 
-  const prefecturePerCapitaTax = prefecture === "神奈川" ? 1_300 : 1_000;
+  const residentTax =
+    residentIncomeTax - adjustmentDeduction + residentPerCapitaTax;
 
-  const forestEnvironmentalTax = 1_000;
-
-  /**
-   * ⑨ 최종 주민세
-   *
-   * 실제 지방세 계산은 시/도별로
-   * 세부적인 1엔/100엔 단위 절사가 존재하므로
-   * 여기서는 예상 계산을 위해
-   * 최종 세액을 100엔 미만 절사한다.
-   */
-  const residentTaxBeforeRounding =
-    incomeBasedTax -
-    adjustmentDeduction +
-    municipalityPerCapitaTax +
-    prefecturePerCapitaTax +
-    forestEnvironmentalTax;
-
-  return Math.floor(Math.max(0, residentTaxBeforeRounding) / 100) * 100;
+  return Math.max(0, Math.floor(residentTax));
 }
 
 /**
- * 메인 계산
+ * ============================================================
+ * 메인 계산 함수
+ * ============================================================
  */
+
 export function calculateSalary(input: SalaryInput): SalaryResult {
   const {
     monthlySalary,
@@ -612,28 +687,33 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
   } = input;
 
   /**
-   * 연간 총급여
+   * ==========================================================
+   * 총급여
+   * ==========================================================
    */
+
   const annualSalary = monthlySalary * 12;
 
   const annualIncome = annualSalary + annualBonus;
 
   /**
-   * -------------------------
+   * ==========================================================
    * 월급 사회보험
-   * -------------------------
+   * ==========================================================
    */
-  const monthlyInsurance = calculateMonthlySocialInsurance(
+
+  const monthlyInsurance = calculateMonthlySocialInsurance2026(
     monthlySalary,
     age,
     prefecture,
   );
 
   /**
-   * -------------------------
+   * ==========================================================
    * 보너스 사회보험
-   * -------------------------
+   * ==========================================================
    */
+
   const bonusPerPayment = bonusPayments > 0 ? annualBonus / bonusPayments : 0;
 
   let bonusHealth = 0;
@@ -657,39 +737,58 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
     bonusChildCare += bonusInsurance.childCareSupport;
   }
 
-  const healthInsurance = monthlyInsurance.healthInsurance * 12 + bonusHealth;
+  /**
+   * ==========================================================
+   * 사회보험료
+   * ==========================================================
+   */
 
-  const nursingInsurance =
-    monthlyInsurance.nursingInsurance * 12 + bonusNursing;
+  const healthInsurance = monthlyInsurance.healthInsurance + bonusHealth;
 
-  const pension = monthlyInsurance.pension * 12 + bonusPension;
+  const nursingInsurance = monthlyInsurance.nursingInsurance + bonusNursing;
 
-  const childCareSupport =
-    monthlyInsurance.childCareSupport * 12 + bonusChildCare;
+  const pension = monthlyInsurance.pension + bonusPension;
+
+  const childCareSupport = monthlyInsurance.childCareSupport + bonusChildCare;
 
   /**
-   * -------------------------
+   * ==========================================================
    * 고용보험
-   * -------------------------
+   * ==========================================================
+   *
+   * 2026년 1~3월:
+   * 0.55%
+   *
+   * 2026년 4~12월:
+   * 0.50%
+   *
+   * 월급 + 보너스를 연간 기준으로
+   * 평균적인 비율을 적용.
    */
-  const employmentInsurance = annualIncome * EMPLOYMENT_INSURANCE_RATE;
+
+  const annualEmploymentInsuranceRate =
+    (EMPLOYMENT_INSURANCE_RATE_2025 * 3 + EMPLOYMENT_INSURANCE_RATE_2026 * 9) /
+    12;
+
+  const employmentInsurance = annualIncome * annualEmploymentInsuranceRate;
 
   /**
-   * -------------------------
+   * ==========================================================
    * 사회보험 합계
-   * -------------------------
+   * ==========================================================
    */
+
   const totalSocialInsurance =
     healthInsurance +
     nursingInsurance +
     pension +
-    childCareSupport +
-    employmentInsurance;
+    employmentInsurance +
+    childCareSupport;
 
   /**
-   * -------------------------
+   * ==========================================================
    * 소득세
-   * -------------------------
+   * ==========================================================
    */
 
   /**
@@ -707,15 +806,16 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
   );
 
   /**
-   * 기초공제
+   * 소득세 기초공제
    */
-  const basicDeduction = calculateBasicDeduction(employmentIncome);
+  const incomeTaxBasicDeduction =
+    calculateIncomeTaxBasicDeduction(employmentIncome);
 
   /**
-   * 부양공제
+   * 부양가족 공제
    *
-   * 일반적인 부양가족을 기준으로
-   * 단순화한 계산.
+   * 현재 UI에서는 나이를 받지 않으므로
+   * 일반 부양공제 38만원으로 계산.
    */
   const dependentDeduction = dependents * 380_000;
 
@@ -726,7 +826,7 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
     0,
     employmentIncome -
       totalSocialInsurance -
-      basicDeduction -
+      incomeTaxBasicDeduction -
       dependentDeduction,
   );
 
@@ -736,15 +836,13 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
   const incomeTax = calculateIncomeTax(taxableIncome);
 
   /**
-   * -------------------------
+   * ==========================================================
    * 주민세
-   * -------------------------
+   * ==========================================================
    *
-   * 중요:
-   *
-   * 주민세는 현재 연봉이 아니라
    * 전년도 연봉을 기준으로 계산.
    */
+
   const residentTax = calculateResidentTax(
     previousAnnualIncome,
     age,
@@ -753,37 +851,55 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
   );
 
   /**
-   * -------------------------
+   * ==========================================================
    * 세금 합계
-   * -------------------------
+   * ==========================================================
    */
+
   const totalTax = incomeTax + residentTax;
 
   /**
-   * -------------------------
+   * ==========================================================
    * 실수령액
-   * -------------------------
+   * ==========================================================
    */
-  const annualTakeHome = annualIncome - totalSocialInsurance - totalTax;
+
+  const annualTakeHome = Math.max(
+    0,
+    annualIncome - totalSocialInsurance - totalTax,
+  );
 
   const monthlyTakeHome = annualTakeHome / 12;
+
+  /**
+   * ==========================================================
+   * 결과 반환
+   * ==========================================================
+   */
 
   return {
     annualIncome,
 
-    healthInsurance,
-    nursingInsurance,
-    pension,
-    employmentInsurance,
-    childCareSupport,
+    healthInsurance: Math.round(healthInsurance),
 
-    incomeTax,
-    residentTax,
+    nursingInsurance: Math.round(nursingInsurance),
 
-    totalSocialInsurance,
-    totalTax,
+    pension: Math.round(pension),
 
-    annualTakeHome,
-    monthlyTakeHome,
+    employmentInsurance: Math.round(employmentInsurance),
+
+    childCareSupport: Math.round(childCareSupport),
+
+    incomeTax: Math.round(incomeTax),
+
+    residentTax: Math.round(residentTax),
+
+    totalSocialInsurance: Math.round(totalSocialInsurance),
+
+    totalTax: Math.round(totalTax),
+
+    annualTakeHome: Math.round(annualTakeHome),
+
+    monthlyTakeHome: Math.round(monthlyTakeHome),
   };
 }
