@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "일본 생활에 필요한 계산기와 생활 도구를 한곳에서 쉽게 이용해보세요.",
+    "일본 생활에 필요한 생활 도구와 정보를 한곳에서 쉽게 이용해보세요.",
 
   keywords: [
     "일본 생활",
