@@ -24,13 +24,16 @@ export const metadata: Metadata = {
     "일본 생활에 필요한 생활 도구와 정보를 한곳에서 쉽게 이용해보세요.",
 
   keywords: [
+    "일생가",
     "일본 생활",
     "일본 생활 계산기",
     "일본 월급 계산기",
     "일본 연봉 계산기",
     "일본 이직",
     "일본 생활비",
+    "일본 생활 한국인",
     "일본 거주 한국인",
+    "일본 생활 도구",
   ],
 
   robots: {
@@ -44,7 +47,8 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "일생가 - 일본 생활 가능하세요?",
-    description: "일본 생활에 필요한 생활 도구를 한곳에서 쉽게 이용해보세요.",
+    description:
+      "일본에 사는 한국인을 위한 생활 도구와 정보를 한곳에서 제공합니다.",
     url: "https://ilsengga.vercel.app",
     siteName: "일생가",
     locale: "ko_KR",
@@ -52,7 +56,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
       lang="ko"
