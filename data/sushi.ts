@@ -131,6 +131,24 @@ export const sushiItems: SushiItem[] = [
 
     tags: ["성게", "고급", "크리미"],
   },
+
+  {
+    slug: "tai",
+    japanese: "たい",
+    reading: "たい",
+    korean: "도미",
+    description: "담백하고 깔끔한 맛이 특징인 도미 초밥입니다.",
+
+    taste: {
+      flavor: 4,
+      fattiness: 2,
+      texture: 3,
+    },
+
+    category: "스시",
+
+    tags: ["도미", "담백함"],
+  },
 ];
 
 export function getSushiBySlug(slug: string) {
