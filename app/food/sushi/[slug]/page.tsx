@@ -88,7 +88,7 @@ export default async function SushiDetailPage({ params }: Props) {
 
         <article className="mt-8">
           {/* 이미지 영역 */}
-          <div className="flex aspect-[16/9] items-center justify-center rounded-3xl bg-gray-200">
+          <div className="flex aspect-video items-center justify-center rounded-3xl bg-gray-200">
             <span className="text-6xl">🍣</span>
           </div>
 
