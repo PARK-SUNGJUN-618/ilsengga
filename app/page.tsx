@@ -72,6 +72,27 @@ const categories = [
       },
     ],
   },
+
+  {
+    title: "🍴 메뉴 도감",
+    description: "일본 식당에서 자주 보는 메뉴를 일본어와 한국어로 알아보세요.",
+    tools: [
+      {
+        title: "일본 메뉴 도감",
+        description:
+          "일본 음식 메뉴의 일본어, 읽는 법, 한국어 뜻과 특징을 확인해보세요.",
+        href: "/food",
+        badge: "NEW",
+      },
+      {
+        title: "스시 메뉴 도감",
+        description:
+          "마구로, 사몬, 엔가와 등 일본 스시 메뉴를 쉽게 알아보세요.",
+        href: "/food/sushi",
+        badge: "NEW",
+      },
+    ],
+  },
 ];
 
 export default function Home() {
