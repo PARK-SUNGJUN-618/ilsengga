@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ilsengga.vercel.app"),
+  metadataBase: new URL(SITE_URL),
 
   title: {
     default: "일생가 - 일본 생활 가능하세요?",
