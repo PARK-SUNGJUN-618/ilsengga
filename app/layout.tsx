@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     title: "일생가 - 일본 생활 가능하세요?",
     description:
       "일본에 사는 한국인을 위한 생활 도구와 정보를 한곳에서 제공합니다.",
-    url: "https://ilsengga.vercel.app",
+    url: SITE_URL,
     siteName: "일생가",
     locale: "ko_KR",
     type: "website",
