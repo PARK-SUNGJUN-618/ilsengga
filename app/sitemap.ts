@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { sushiItems } from "@/data/sushi";
+import { SITE_URL } from "@/lib/site";
 
 const BASE_URL = "https://ilsengga.vercel.app";
 
