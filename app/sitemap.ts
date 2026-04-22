@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // 돈 / 직장
     {
-      url: `${BASE_URL}/tools/salary`,
+      url: `${SITE_URL}/tools/salary`,
       lastModified: new Date(),
     },
 
