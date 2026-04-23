@@ -16,7 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
 
     {
-      url: `${BASE_URL}/tools/job-change`,
+      url: `${SITE_URL}/tools/job-change`,
       lastModified: new Date(),
     },
 
