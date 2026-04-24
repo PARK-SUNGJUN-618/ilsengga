@@ -22,18 +22,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // 메뉴 도감
     {
-      url: `${BASE_URL}/food`,
+      url: `${SITE_URL}/food`,
       lastModified: new Date(),
     },
 
     {
-      url: `${BASE_URL}/food/sushi`,
+      url: `${SITE_URL}/food/sushi`,
       lastModified: new Date(),
     },
   ];
 
   const sushiPages: MetadataRoute.Sitemap = sushiItems.map((item) => ({
-    url: `${BASE_URL}/food/sushi/${item.slug}`,
+    url: `${SITE_URL}/food/sushi/${item.slug}`,
     lastModified: new Date(),
   }));
 
