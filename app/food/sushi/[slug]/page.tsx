@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { sushiItems, getSushiBySlug } from "@/data/sushi";
+import { SITE_URL } from "@/lib/site";
 
 type Props = {
   params: Promise<{
