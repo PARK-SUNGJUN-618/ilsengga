@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${item.japanese} - ${item.korean} | 일생가`,
       description: item.description,
-      url: `https://ilsengga.vercel.app/food/sushi/${item.slug}`,
+      url: `${SITE_URL}/food/sushi/${item.slug}`,
       siteName: "일생가",
       locale: "ko_KR",
       type: "article",
