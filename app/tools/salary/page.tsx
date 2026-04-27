@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SalaryCalculator from "./SalaryCalculator";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "일본 월급 실수령액 계산기",
