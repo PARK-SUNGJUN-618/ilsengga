@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: "일본 월급 실수령액 계산기 | 일생가",
     description:
       "일본 월급을 입력하고 사회보험과 세금을 고려한 예상 실수령액을 계산해보세요.",
-    url: "https://ilsengga.vercel.app/tools/salary",
+    url: `${SITE_URL}/tools/salary`,
     siteName: "일생가",
     locale: "ko_KR",
     type: "website",
