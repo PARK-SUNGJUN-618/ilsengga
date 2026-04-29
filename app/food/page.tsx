@@ -22,24 +22,28 @@ const categories = [
     description: "일본 초밥집에서 자주 볼 수 있는 메뉴",
     href: "/food/sushi",
     emoji: "🍣",
+    isAvailable: true,
   },
   {
     name: "라멘",
     description: "일본에서 자주 먹는 다양한 라멘",
     href: "/food/ramen",
     emoji: "🍜",
+    isAvailable: false,
   },
   {
     name: "야키니쿠",
     description: "일본식 고기구이 부위와 메뉴",
     href: "/food/yakiniku",
     emoji: "🥩",
+    isAvailable: false,
   },
   {
     name: "이자카야",
     description: "일본 술집에서 자주 볼 수 있는 메뉴",
     href: "/food/izakaya",
     emoji: "🍶",
+    isAvailable: false,
   },
 ];
 
@@ -65,23 +69,51 @@ export default function FoodPage() {
         </header>
 
         <section className="mt-10 grid gap-4 sm:grid-cols-2">
-          {categories.map((category) => (
-            <Link
-              key={category.href}
-              href={category.href}
-              className="rounded-2xl border border-gray-200 bg-white p-6 transition hover:-translate-y-1 hover:shadow-md"
-            >
-              <div className="text-4xl">{category.emoji}</div>
+          {categories.map((category) => {
+            const content = (
+              <>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="text-4xl">{category.emoji}</div>
 
-              <h2 className="mt-4 text-xl font-bold text-gray-900">
-                {category.name}
-              </h2>
+                  {!category.isAvailable && (
+                    <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600">
+                      준비 중
+                    </span>
+                  )}
+                </div>
 
-              <p className="mt-2 text-sm leading-6 text-gray-600">
-                {category.description}
-              </p>
-            </Link>
-          ))}
+                <h2 className="mt-4 text-xl font-bold text-gray-900">
+                  {category.name}
+                </h2>
+
+                <p className="mt-2 text-sm leading-6 text-gray-600">
+                  {category.description}
+                </p>
+              </>
+            );
+
+            if (!category.isAvailable) {
+              return (
+                <div
+                  key={category.href}
+                  aria-disabled="true"
+                  className="cursor-not-allowed rounded-2xl border border-gray-200 bg-gray-50 p-6"
+                >
+                  {content}
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                key={category.href}
+                href={category.href}
+                className="rounded-2xl border border-gray-200 bg-white p-6 transition hover:-translate-y-1 hover:shadow-md"
+              >
+                {content}
+              </Link>
+            );
+          })}
         </section>
       </div>
     </main>

@@ -5,6 +5,7 @@ type ToolCardProps = {
   description: string;
   href: string;
   badge?: string;
+  isAvailable?: boolean;
 };
 
 export default function ToolCard({
@@ -12,12 +13,10 @@ export default function ToolCard({
   description,
   href,
   badge,
+  isAvailable = true,
 }: ToolCardProps) {
-  return (
-    <Link
-      href={href}
-      className="group block rounded-xl border bg-white p-5 transition hover:-translate-y-1 hover:border-gray-300 hover:shadow-md"
-    >
+  const content = (
+    <>
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="font-semibold text-gray-900 group-hover:underline">
@@ -34,7 +33,29 @@ export default function ToolCard({
         )}
       </div>
 
-      <div className="mt-4 text-sm font-medium text-gray-700">사용해보기 →</div>
+      <div className="mt-4 text-sm font-medium text-gray-700">
+        {isAvailable ? "사용해보기 →" : "준비 중"}
+      </div>
+    </>
+  );
+
+  if (!isAvailable) {
+    return (
+      <div
+        aria-disabled="true"
+        className="group block cursor-not-allowed rounded-xl border border-gray-200 bg-gray-50 p-5"
+      >
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className="group block rounded-xl border bg-white p-5 transition hover:-translate-y-1 hover:border-gray-300 hover:shadow-md"
+    >
+      {content}
     </Link>
   );
 }
