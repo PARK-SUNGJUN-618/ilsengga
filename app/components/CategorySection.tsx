@@ -28,7 +28,7 @@ export default function CategorySection({
 
       <div className="grid gap-4 sm:grid-cols-2">
         {tools.map((tool) => (
-          <ToolCard key={tool.href} {...tool} />
+          <ToolCard key={tool.title} {...tool} />
         ))}
       </div>
     </section>

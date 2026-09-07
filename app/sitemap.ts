@@ -15,11 +15,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
 
-    {
-      url: `${SITE_URL}/tools/job-change`,
-      lastModified: new Date(),
-    },
-
     // 메뉴 도감
     {
       url: `${SITE_URL}/food`,

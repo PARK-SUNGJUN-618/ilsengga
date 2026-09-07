@@ -27,23 +27,20 @@ const categories = [
   {
     name: "라멘",
     description: "일본에서 자주 먹는 다양한 라멘",
-    href: "/food/ramen",
+    href: "/coming-soon",
     emoji: "🍜",
-    isAvailable: false,
   },
   {
     name: "야키니쿠",
     description: "일본식 고기구이 부위와 메뉴",
-    href: "/food/yakiniku",
+    href: "/coming-soon",
     emoji: "🥩",
-    isAvailable: false,
   },
   {
     name: "이자카야",
     description: "일본 술집에서 자주 볼 수 있는 메뉴",
-    href: "/food/izakaya",
+    href: "/coming-soon",
     emoji: "🍶",
-    isAvailable: false,
   },
 ];
 
@@ -70,14 +67,17 @@ export default function FoodPage() {
 
         <section className="mt-10 grid gap-4 sm:grid-cols-2">
           {categories.map((category) => {
+            const badge =
+              category.href === "/coming-soon" ? "준비 중" : undefined;
+
             const content = (
               <>
                 <div className="flex items-start justify-between gap-4">
                   <div className="text-4xl">{category.emoji}</div>
 
-                  {!category.isAvailable && (
+                  {badge && (
                     <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600">
-                      준비 중
+                      {badge}
                     </span>
                   )}
                 </div>
@@ -92,21 +92,9 @@ export default function FoodPage() {
               </>
             );
 
-            if (!category.isAvailable) {
-              return (
-                <div
-                  key={category.href}
-                  aria-disabled="true"
-                  className="cursor-not-allowed rounded-2xl border border-gray-200 bg-gray-50 p-6"
-                >
-                  {content}
-                </div>
-              );
-            }
-
             return (
               <Link
-                key={category.href}
+                key={category.name}
                 href={category.href}
                 className="rounded-2xl border border-gray-200 bg-white p-6 transition hover:-translate-y-1 hover:shadow-md"
               >
