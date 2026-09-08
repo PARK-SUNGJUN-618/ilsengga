@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 일생가 (Ilsengga)
 
-## Getting Started
+> 일본 생활 가능하세요?
 
-First, run the development server:
+일생가(Ilsengga)는 일본에서 생활하거나 일본 생활을 준비하는 한국인을 위한 생활 정보·도구 사이트입니다.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+음식 메뉴, 급여와 세금처럼 일본 생활에서 자주 마주치는 정보를 한국어로 쉽게 이해하고 활용할 수 있도록 돕습니다.
+
+- 서비스: [ilsengga.com](https://ilsengga.com)
+- 대상: 일본 거주자, 일본 취업·이직 준비자, 일본 생활을 준비하는 한국인
+
+## 현재 제공 기능
+
+### 일본 메뉴 도감
+
+일본 식당에서 자주 볼 수 있는 메뉴를 일본어, 읽는 법, 한국어 뜻과 함께 확인할 수 있습니다.
+
+현재 제공하는 콘텐츠는 다음과 같습니다.
+
+- 스시 메뉴 도감
+  - 마구로(참치)
+  - 사몬(연어)
+  - 엔가와
+  - 호타테(가리비)
+  - 이쿠라(연어알)
+  - 우니(성게알)
+  - 타이(도미)
+- 각 메뉴의 일본어 표기, 읽는 법, 한국어 뜻, 설명
+- 맛, 기름기, 식감 점수와 관련 태그
+
+### 일본 월급 실수령액 계산기
+
+월급과 보너스, 나이, 거주 지역, 부양가족 수, 전년도 연봉을 입력하면 일본 직장인의 예상 실수령액을 계산합니다.
+
+계산 결과에는 다음 항목이 포함됩니다.
+
+- 연간 총급여 및 연간·월간 예상 실수령액
+- 건강보험, 개호보험, 후생연금
+- 고용보험, 자녀·육아지원금
+- 소득세, 주민세
+- 연간 사회보험료 및 세금 합계
+
+## 준비 중인 기능
+
+다음 기능은 현재 화면에 안내되어 있으며, 추후 제공할 예정입니다.
+
+- 일본 연봉 계산기
+- 이직 연봉 비교
+- 일본 잔업수당 계산기
+- 일본 생활비 계산기
+- 일본 이사 비용 계산기
+- 일본 여행 예산 계산기
+- 라멘, 야키니쿠, 이자카야 메뉴 도감
+
+## 기술 스택
+
+- [Next.js](https://nextjs.org/) 16
+- [React](https://react.dev/) 19
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/) 4
+- PostCSS
+- ESLint
+
+Next.js App Router를 기반으로 구성했으며, 스시 콘텐츠는 로컬 데이터 파일에서 관리합니다. 급여 계산은 별도 외부 API 없이 프로젝트 내부 계산 로직으로 처리합니다.
+
+## 프로젝트 구조
+
+```text
+app/
+├── components/              # 공통 UI 컴포넌트
+├── coming-soon/             # 준비 중 안내 페이지
+├── food/                    # 일본 메뉴 도감
+│   └── sushi/               # 스시 목록 및 상세 페이지
+├── tools/
+│   └── salary/              # 월급 실수령액 계산기
+├── layout.tsx               # 전역 레이아웃 및 사이트 메타데이터
+├── page.tsx                 # 홈 화면
+├── robots.ts                # robots.txt 생성
+└── sitemap.ts               # sitemap.xml 생성
+
+data/
+└── sushi.ts                 # 스시 메뉴 데이터
+
+lib/
+├── salary.ts                # 일본 급여·세금·사회보험 계산 로직
+└── site.ts                  # 사이트 URL 설정
+
+public/
+└── ...                      # 정적 파일
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 로컬 실행 방법
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 요구 사항
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 20.9.0 이상 (Next.js 16 요구 사항)
+- npm
 
-## Learn More
+### 설치 및 개발 서버 실행
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+개발 서버 실행 후 [http://localhost:3000](http://localhost:3000)에서 확인할 수 있습니다.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 프로덕션 빌드 및 실행
 
-## Deploy on Vercel
+```bash
+npm run build
+npm run start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 린트 검사
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+```
+
+## 계산기 안내
+
+월급 실수령액 계산기는 2026년 일본의 세금 및 사회보험 제도를 기준으로 한 예상 계산 결과를 제공합니다.
+
+- 일반적인 회사원 및 협회けんぽ 가입자를 기준으로 계산합니다.
+- 주민세는 전년도 소득을 기준으로 하므로 전년도 연봉을 별도로 입력받습니다.
+- 건강보험조합 가입 여부, 표준보수월액·표준상여액, 보너스 지급 방식, 부양가족 조건, 공제 항목, 거주 시구정촌 등에 따라 실제 금액과 차이가 발생할 수 있습니다.
+- 계산 결과는 급여명세서나 세무·노무 전문가의 판단을 대체하지 않습니다.
+
+## 서비스
+
+- 웹사이트: [https://ilsengga.com](https://ilsengga.com)
+- 사이트맵: [https://ilsengga.com/sitemap.xml](https://ilsengga.com/sitemap.xml)
+- robots.txt: [https://ilsengga.com/robots.txt](https://ilsengga.com/robots.txt)
+
+페이지별 메타데이터와 Open Graph 정보를 제공하며, 스시 상세 페이지는 정적 경로로 생성합니다.
