@@ -4,7 +4,7 @@ export type SushiItem = {
   reading: string;
   korean: string;
   description: string;
-
+  image?: string;
   taste: {
     flavor: number;
     fattiness: number;
@@ -21,6 +21,7 @@ export type SushiItem = {
 export const sushiItems: SushiItem[] = [
   {
     slug: "maguro",
+    image: "/images/sushi/maguro.png",
     japanese: "マグロ",
     reading: "まぐろ",
     korean: "참치",
@@ -40,6 +41,7 @@ export const sushiItems: SushiItem[] = [
 
   {
     slug: "salmon",
+    image: "/images/sushi/salmon.png",
     japanese: "サーモン",
     reading: "さーもん",
     korean: "연어",
@@ -59,6 +61,7 @@ export const sushiItems: SushiItem[] = [
 
   {
     slug: "engawa",
+    image: "/images/sushi/engawa.png",
     japanese: "えんがわ",
     reading: "えんがわ",
     korean: "엔가와",
@@ -78,6 +81,7 @@ export const sushiItems: SushiItem[] = [
 
   {
     slug: "hotate",
+    image: "/images/sushi/hotate.png",
     japanese: "ほたて",
     reading: "ほたて",
     korean: "가리비",
@@ -96,6 +100,7 @@ export const sushiItems: SushiItem[] = [
 
   {
     slug: "ikura",
+    image: "/images/sushi/ikura.png",
     japanese: "いくら",
     reading: "いくら",
     korean: "연어알",
@@ -115,6 +120,7 @@ export const sushiItems: SushiItem[] = [
 
   {
     slug: "uni",
+    image: "/images/sushi/uni.png",
     japanese: "うに",
     reading: "うに",
     korean: "성게알",
@@ -134,6 +140,7 @@ export const sushiItems: SushiItem[] = [
 
   {
     slug: "tai",
+    image: "/images/sushi/tai.png",
     japanese: "たい",
     reading: "たい",
     korean: "도미",

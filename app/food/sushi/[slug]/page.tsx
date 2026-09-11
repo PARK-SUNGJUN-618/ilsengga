@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { sushiItems, getSushiBySlug } from "@/data/sushi";
 import { SITE_URL } from "@/lib/site";
+import Image from "next/image";
 
 type Props = {
   params: Promise<{
@@ -89,8 +90,18 @@ export default async function SushiDetailPage({ params }: Props) {
 
         <article className="mt-8">
           {/* 이미지 영역 */}
-          <div className="flex aspect-video items-center justify-center rounded-3xl bg-gray-200">
-            <span className="text-6xl">🍣</span>
+          <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-3xl bg-gray-200">
+            {item.image ? (
+              <Image
+                src={item.image}
+                alt={`${item.korean} 초밥`}
+                fill
+                sizes="(max-width: 768px) calc(100vw - 32px), 736px"
+                className="object-contain"
+              />
+            ) : (
+              <span className="text-6xl">🍣</span>
+            )}
           </div>
 
           {/* 기본 정보 */}
