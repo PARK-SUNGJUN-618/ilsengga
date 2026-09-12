@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { appsContentUpdatedAt } from "@/data/apps";
 import { sushiItems } from "@/data/sushi";
 import { SITE_URL } from "@/lib/site";
 
@@ -7,6 +8,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: SITE_URL,
       lastModified: new Date(),
+    },
+
+    // 일본 필수 앱
+    {
+      url: `${SITE_URL}/apps`,
+      lastModified: appsContentUpdatedAt,
     },
 
     // 돈 / 직장

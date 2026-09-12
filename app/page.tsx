@@ -63,6 +63,11 @@ const categories = [
     description: "일본에서 생활하면서 자주 필요한 계산과 정보입니다.",
     tools: [
       {
+        title: "일본 필수 앱",
+        description: "일본 여행·생활에 필요한 앱과 한국 휴대폰 사용 조건을 확인하세요.",
+        href: "/apps",
+      },
+      {
         title: "일본 생활비 계산기",
         description: "월세와 생활비를 입력해서 한 달 지출을 계산해보세요.",
         href: "/coming-soon",
