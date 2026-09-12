@@ -66,6 +66,7 @@ const categories = [
         title: "일본 필수 앱",
         description: "일본 여행·생활에 필요한 앱과 한국 휴대폰 사용 조건을 확인하세요.",
         href: "/apps",
+        badge: "NEW",
       },
       {
         title: "일본 생활비 계산기",

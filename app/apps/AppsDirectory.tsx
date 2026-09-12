@@ -36,7 +36,7 @@ function StatusValue({ value }: { value: Condition<Status> }) {
       <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>
         <span aria-hidden="true">{symbol}</span>{statusLabels[value.status]}
       </span>
-      {value.note && <p className="mt-1 text-xs leading-5 text-gray-600">{value.note}</p>}
+      {value.note && <p className="mt-1.5 text-sm leading-6 text-gray-600">{value.note}</p>}
     </>
   );
 }
@@ -50,20 +50,21 @@ function ConditionRow({ label, value, platforms }: {
   const android = forPlatform(value, "android");
   const iosUnavailable = platforms && forPlatform(platforms, "ios").status === "unavailable";
   const androidUnavailable = platforms && forPlatform(platforms, "android").status === "unavailable";
-  const same = iosUnavailable === androidUnavailable && ios.status === android.status && ios.note === android.note;
+  const same = ios.status === android.status && ios.note === android.note;
+  const hasNote = (!iosUnavailable && ios.note) || (!androidUnavailable && android.note);
   return (
-    <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 py-2.5">
+    <div className={`grid py-2.5 ${hasNote ? "grid-cols-1 gap-1.5" : "grid-cols-[6rem_minmax(0,1fr)] gap-3"}`}>
       <dt className="text-sm text-gray-600">{label}</dt>
       <dd className="min-w-0">
         {iosUnavailable && androidUnavailable ? <span className="text-sm text-gray-500">— 해당 없음</span>
+          : iosUnavailable ? <StatusValue value={android} />
+          : androidUnavailable ? <StatusValue value={ios} />
           : same ? <StatusValue value={ios} />
           : <div className="space-y-2">
             {(["ios", "android"] as const).map((platform) => (
               <div key={platform}>
                 <span className="mr-2 text-xs text-gray-500">{platformLabels[platform]}</span>
-                {platforms && forPlatform(platforms, platform).status === "unavailable"
-                  ? <span className="text-sm text-gray-500">— 해당 없음</span>
-                  : <StatusValue value={forPlatform(value, platform)} />}
+                <StatusValue value={forPlatform(value, platform)} />
               </div>
             ))}
           </div>}
@@ -74,7 +75,7 @@ function ConditionRow({ label, value, platforms }: {
 
 function AppCard({ app }: { app: AppItem }) {
   return (
-    <article id={app.id} aria-labelledby={`${app.id}-title`} className="rounded-xl border border-gray-200 bg-white p-5">
+    <article id={app.id} aria-labelledby={`${app.id}-title`} className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <h2 id={`${app.id}-title`} className="text-xl font-bold">{app.name}</h2>
       <p className="mt-2 text-sm leading-6 text-gray-600">{app.description}</p>
       <p className="mt-2 text-xs font-medium text-gray-500">
