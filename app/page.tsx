@@ -24,6 +24,30 @@ const categories = [
   },
 
   {
+    title: "🏠 생활",
+    description: "일본에서 생활하면서 자주 필요한 계산과 정보입니다.",
+    tools: [
+      {
+        title: "일본 필수 앱",
+        description:
+          "일본 여행·생활에 필요한 앱과 한국 휴대폰 사용 조건을 확인하세요.",
+        href: "/apps",
+        badge: "NEW",
+      },
+      {
+        title: "일본 생활비 계산기",
+        description: "월세와 생활비를 입력해서 한 달 지출을 계산해보세요.",
+        href: "/coming-soon",
+      },
+      {
+        title: "일본 이사 비용 계산기",
+        description: "일본에서 이사할 때 예상되는 비용을 확인해보세요.",
+        href: "/coming-soon",
+      },
+    ],
+  },
+
+  {
     title: "💰 돈",
     description: "일본에서 벌고 쓰는 돈을 쉽게 계산해보세요.",
     tools: [
@@ -53,29 +77,6 @@ const categories = [
       {
         title: "일본 잔업수당 계산기",
         description: "잔업시간과 시급을 기준으로 잔업수당을 계산해보세요.",
-        href: "/coming-soon",
-      },
-    ],
-  },
-
-  {
-    title: "🏠 생활",
-    description: "일본에서 생활하면서 자주 필요한 계산과 정보입니다.",
-    tools: [
-      {
-        title: "일본 필수 앱",
-        description: "일본 여행·생활에 필요한 앱과 한국 휴대폰 사용 조건을 확인하세요.",
-        href: "/apps",
-        badge: "NEW",
-      },
-      {
-        title: "일본 생활비 계산기",
-        description: "월세와 생활비를 입력해서 한 달 지출을 계산해보세요.",
-        href: "/coming-soon",
-      },
-      {
-        title: "일본 이사 비용 계산기",
-        description: "일본에서 이사할 때 예상되는 비용을 확인해보세요.",
         href: "/coming-soon",
       },
     ],
