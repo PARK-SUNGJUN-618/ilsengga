@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 
-import { calculateSalary, PREFECTURES, type SalaryResult } from "@/lib/salary";
+import {
+  calculateSalary,
+  PREFECTURES,
+  validateSalaryInput,
+  type SalaryInputErrors,
+  type SalaryResult,
+} from "@/lib/salary";
 
 function formatYen(value: number) {
   return new Intl.NumberFormat("ja-JP").format(Math.round(value));
@@ -16,6 +22,7 @@ function Input({
   min = 0,
   max,
   step = 10000,
+  error,
 }: {
   label: string;
   value: number;
@@ -24,6 +31,7 @@ function Input({
   min?: number;
   max?: number;
   step?: number;
+  error?: string;
 }) {
   return (
     <div>
@@ -32,11 +40,11 @@ function Input({
       <div className="mt-2 flex items-center gap-2">
         <input
           type="number"
-          value={value}
+          value={Number.isFinite(value) ? value : ""}
           min={min}
           max={max}
           step={step}
-          onChange={(e) => onChange(Number(e.target.value))}
+          onChange={(e) => onChange(e.target.valueAsNumber)}
           className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-right text-lg outline-none transition focus:border-gray-700 focus:ring-2 focus:ring-gray-200"
         />
 
@@ -44,6 +52,7 @@ function Input({
           <span className="whitespace-nowrap text-gray-500">{suffix}</span>
         )}
       </div>
+      {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
     </div>
   );
 }
@@ -90,17 +99,24 @@ export default function SalaryCalculator() {
   const [previousAnnualIncome, setPreviousAnnualIncome] = useState(3600000);
 
   const [result, setResult] = useState<SalaryResult | null>(null);
+  const [errors, setErrors] = useState<SalaryInputErrors>({});
 
   function handleCalculate() {
-    const calculated = calculateSalary({
+    const input = {
       monthlySalary,
       annualBonus,
-      bonusPayments,
+      // 보너스가 없으면 숨겨진 횟수 입력은 계산에 사용하지 않습니다.
+      bonusPayments: annualBonus === 0 ? 0 : bonusPayments,
       age,
       prefecture,
       dependents,
       previousAnnualIncome,
-    });
+    };
+    const inputErrors = validateSalaryInput(input);
+    setErrors(inputErrors);
+    if (Object.keys(inputErrors).length > 0) return;
+
+    const calculated = calculateSalary(input);
 
     setResult(calculated);
   }
@@ -124,6 +140,7 @@ export default function SalaryCalculator() {
             label="월급"
             value={monthlySalary}
             onChange={setMonthlySalary}
+            error={errors.monthlySalary}
             suffix="円"
             step={10000}
           />
@@ -132,6 +149,7 @@ export default function SalaryCalculator() {
             label="연간 보너스"
             value={annualBonus}
             onChange={setAnnualBonus}
+            error={errors.annualBonus}
             suffix="円"
             step={10000}
           />
@@ -141,12 +159,21 @@ export default function SalaryCalculator() {
               label="보너스 지급 횟수"
               value={bonusPayments}
               onChange={setBonusPayments}
+              error={errors.bonusPayments}
               suffix="회"
               min={1}
-              max={12}
+              max={3}
               step={1}
             />
           )}
+
+          <p className="text-xs leading-5 text-gray-500">
+            보너스는 같은 보험연도(4월 1일~다음해 3월 31일)에 서로 다른 달에
+            같은 금액으로 지급된다고 가정합니다. 건강보험 상여 상한은 해당
+            보험연도 누계 573만 엔, 후생연금 상여 상한은 월 150만 엔입니다.
+            같은 달 여러 번 지급하거나 보험연도를 걸치는 경우는 지원하지 않습니다.
+            연 4회 이상 지급되는 보너스는 월 보수에 포함되므로 현재 계산 대상에서 제외합니다.
+          </p>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -156,15 +183,16 @@ export default function SalaryCalculator() {
             <div className="mt-2 flex items-center gap-2">
               <input
                 type="number"
-                value={age}
+                value={Number.isFinite(age) ? age : ""}
                 min={18}
                 max={100}
-                onChange={(e) => setAge(Number(e.target.value))}
+                onChange={(e) => setAge(e.target.valueAsNumber)}
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 text-right text-lg outline-none focus:border-gray-700 focus:ring-2 focus:ring-gray-200"
               />
 
               <span className="text-gray-500">세</span>
             </div>
+            {errors.age && <p className="mt-2 text-sm text-red-700">{errors.age}</p>}
 
             <p className="mt-2 text-xs leading-5 text-gray-500">
               40~64세는 개호보험료가 추가됩니다.
@@ -187,6 +215,7 @@ export default function SalaryCalculator() {
                 </option>
               ))}
             </select>
+            {errors.prefecture && <p className="mt-2 text-sm text-red-700">{errors.prefecture}</p>}
 
             <p className="mt-2 text-xs leading-5 text-gray-500">
               협회けんぽ 가입자를 기준으로 계산합니다. 건강보험조합 가입자는
@@ -198,6 +227,7 @@ export default function SalaryCalculator() {
             label="부양가족"
             value={dependents}
             onChange={setDependents}
+            error={errors.dependents}
             suffix="명"
             min={0}
             step={1}
@@ -208,6 +238,7 @@ export default function SalaryCalculator() {
               label="전년도 연봉"
               value={previousAnnualIncome}
               onChange={setPreviousAnnualIncome}
+              error={errors.previousAnnualIncome}
               suffix="円"
               step={10000}
             />

@@ -99,6 +99,55 @@ export const HEALTH_RATES: Record<string, number> = {
 
 export const PREFECTURES = Object.keys(HEALTH_RATES);
 
+export type SalaryInputErrors = Partial<Record<keyof SalaryInput, string>>;
+
+export function validateSalaryInput(input: SalaryInput): SalaryInputErrors {
+  const errors: SalaryInputErrors = {};
+  const fields = [
+    ["monthlySalary", "월급"],
+    ["annualBonus", "연간 보너스"],
+    ["previousAnnualIncome", "전년도 연봉"],
+    ["age", "나이"],
+    ["dependents", "부양가족 수"],
+    ["bonusPayments", "보너스 지급 횟수"],
+  ] as const;
+
+  for (const [field, label] of fields) {
+    const value = input[field];
+    if (!Number.isFinite(value)) {
+      errors[field] = `${label}에 유효한 숫자를 입력해주세요.`;
+    } else if (value < 0) {
+      errors[field] = `${label}은 0 이상이어야 합니다.`;
+    } else if (!Number.isSafeInteger(value)) {
+      errors[field] = `${label}은 계산 가능한 범위의 정수로 입력해주세요.`;
+    }
+  }
+
+  if (!errors.age && (input.age < 18 || input.age > 100)) {
+    errors.age = "나이는 18~100세 사이의 정수로 입력해주세요.";
+  }
+  if (!errors.bonusPayments) {
+    if (input.bonusPayments > 3) {
+      errors.bonusPayments = "연 4회 이상 보너스는 월 보수에 포함되어 현재 계산기에서 지원하지 않습니다. 0~3회를 입력해주세요.";
+    } else if (input.annualBonus > 0 && input.bonusPayments === 0) {
+      errors.bonusPayments = "보너스가 있으면 지급 횟수를 1~3회로 입력해주세요.";
+    }
+  }
+  // 세법상 한도가 아니라 JS 숫자 연산의 안전 범위를 검증합니다.
+  if (!errors.monthlySalary && !errors.annualBonus &&
+      !Number.isSafeInteger(input.monthlySalary * 12 + input.annualBonus)) {
+    errors.monthlySalary = "월급 × 12 + 연간 보너스가 계산 가능한 범위를 초과합니다. 금액을 줄여주세요.";
+    errors.annualBonus = errors.monthlySalary;
+  }
+  if (!errors.dependents && !Number.isSafeInteger(input.dependents * 380_000)) {
+    errors.dependents = "부양가족 수가 계산 가능한 범위를 초과합니다.";
+  }
+  if (!PREFECTURES.includes(input.prefecture)) {
+    errors.prefecture = "목록에서 거주 지역을 선택해주세요.";
+  }
+  return errors;
+}
+
 /**
  * ============================================================
  * 保険료율
@@ -129,43 +178,65 @@ const EMPLOYMENT_INSURANCE_RATE_2026 = 0.005;
  * ============================================================
  */
 
-function getStandardMonthlyRemuneration(monthlySalary: number) {
-  if (monthlySalary <= 63_000) return 58_000;
-  if (monthlySalary <= 73_000) return 68_000;
-  if (monthlySalary <= 83_000) return 78_000;
-  if (monthlySalary <= 93_000) return 88_000;
-  if (monthlySalary <= 101_000) return 98_000;
-  if (monthlySalary <= 107_000) return 104_000;
-  if (monthlySalary <= 114_000) return 110_000;
-  if (monthlySalary <= 122_000) return 118_000;
-  if (monthlySalary <= 130_000) return 126_000;
-  if (monthlySalary <= 138_000) return 134_000;
-  if (monthlySalary <= 146_000) return 142_000;
-  if (monthlySalary <= 155_000) return 150_000;
-  if (monthlySalary <= 165_000) return 160_000;
-  if (monthlySalary <= 175_000) return 170_000;
-  if (monthlySalary <= 185_000) return 180_000;
-  if (monthlySalary <= 195_000) return 190_000;
-  if (monthlySalary <= 210_000) return 200_000;
-  if (monthlySalary <= 230_000) return 220_000;
-  if (monthlySalary <= 250_000) return 240_000;
-  if (monthlySalary <= 270_000) return 260_000;
-  if (monthlySalary <= 290_000) return 280_000;
-  if (monthlySalary <= 310_000) return 300_000;
-  if (monthlySalary <= 330_000) return 320_000;
-  if (monthlySalary <= 350_000) return 340_000;
-  if (monthlySalary <= 370_000) return 360_000;
-  if (monthlySalary <= 395_000) return 380_000;
-  if (monthlySalary <= 425_000) return 410_000;
-  if (monthlySalary <= 455_000) return 440_000;
-  if (monthlySalary <= 485_000) return 470_000;
-  if (monthlySalary <= 515_000) return 500_000;
-  if (monthlySalary <= 545_000) return 530_000;
-  if (monthlySalary <= 575_000) return 560_000;
-  if (monthlySalary <= 605_000) return 590_000;
-  if (monthlySalary <= 635_000) return 620_000;
+// 2026년 공식 등급표: 하한 이상, 상한 미만.
+// https://www.kyoukaikenpo.or.jp/~/media/Files/shared/hokenryouritu/r8/ippan/R8_13tokyo.pdf
+function getHealthStandardMonthlyRemuneration(monthlySalary: number) {
+  if (monthlySalary < 63_000) return 58_000;
+  if (monthlySalary < 73_000) return 68_000;
+  if (monthlySalary < 83_000) return 78_000;
+  if (monthlySalary < 93_000) return 88_000;
+  if (monthlySalary < 101_000) return 98_000;
+  if (monthlySalary < 107_000) return 104_000;
+  if (monthlySalary < 114_000) return 110_000;
+  if (monthlySalary < 122_000) return 118_000;
+  if (monthlySalary < 130_000) return 126_000;
+  if (monthlySalary < 138_000) return 134_000;
+  if (monthlySalary < 146_000) return 142_000;
+  if (monthlySalary < 155_000) return 150_000;
+  if (monthlySalary < 165_000) return 160_000;
+  if (monthlySalary < 175_000) return 170_000;
+  if (monthlySalary < 185_000) return 180_000;
+  if (monthlySalary < 195_000) return 190_000;
+  if (monthlySalary < 210_000) return 200_000;
+  if (monthlySalary < 230_000) return 220_000;
+  if (monthlySalary < 250_000) return 240_000;
+  if (monthlySalary < 270_000) return 260_000;
+  if (monthlySalary < 290_000) return 280_000;
+  if (monthlySalary < 310_000) return 300_000;
+  if (monthlySalary < 330_000) return 320_000;
+  if (monthlySalary < 350_000) return 340_000;
+  if (monthlySalary < 370_000) return 360_000;
+  if (monthlySalary < 395_000) return 380_000;
+  if (monthlySalary < 425_000) return 410_000;
+  if (monthlySalary < 455_000) return 440_000;
+  if (monthlySalary < 485_000) return 470_000;
+  if (monthlySalary < 515_000) return 500_000;
+  if (monthlySalary < 545_000) return 530_000;
+  if (monthlySalary < 575_000) return 560_000;
+  if (monthlySalary < 605_000) return 590_000;
+  if (monthlySalary < 635_000) return 620_000;
 
-  return 650_000;
+  if (monthlySalary < 665_000) return 650_000;
+  if (monthlySalary < 695_000) return 680_000;
+  if (monthlySalary < 730_000) return 710_000;
+  if (monthlySalary < 770_000) return 750_000;
+  if (monthlySalary < 810_000) return 790_000;
+  if (monthlySalary < 855_000) return 830_000;
+  if (monthlySalary < 905_000) return 880_000;
+  if (monthlySalary < 955_000) return 930_000;
+  if (monthlySalary < 1_005_000) return 980_000;
+  if (monthlySalary < 1_055_000) return 1_030_000;
+  if (monthlySalary < 1_115_000) return 1_090_000;
+  if (monthlySalary < 1_175_000) return 1_150_000;
+  if (monthlySalary < 1_235_000) return 1_210_000;
+  if (monthlySalary < 1_295_000) return 1_270_000;
+  if (monthlySalary < 1_355_000) return 1_330_000;
+
+  return 1_390_000;
+}
+
+function getPensionStandardMonthlyRemuneration(monthlySalary: number) {
+  return Math.min(650_000, Math.max(88_000, getHealthStandardMonthlyRemuneration(monthlySalary)));
 }
 
 /**
@@ -333,7 +404,8 @@ function calculateMonthlySocialInsurance2026(
   age: number,
   prefecture: string,
 ) {
-  const standard = getStandardMonthlyRemuneration(monthlySalary);
+  const standard = getHealthStandardMonthlyRemuneration(monthlySalary);
+  const pensionStandard = getPensionStandardMonthlyRemuneration(monthlySalary);
 
   const healthRate = HEALTH_RATES[prefecture] ?? HEALTH_RATES["東京"];
 
@@ -356,7 +428,7 @@ function calculateMonthlySocialInsurance2026(
   const childCareSupport = monthlyChildCare * 9;
 
   // 후생연금
-  const monthlyPension = (standard * PENSION_RATE) / 2;
+  const monthlyPension = (pensionStandard * PENSION_RATE) / 2;
 
   const pension = monthlyPension * 12;
 
@@ -388,8 +460,14 @@ function calculateMonthlySocialInsurance2026(
  * → 근로자 절반 부담
  */
 
+// 같은 보험연도(4/1~다음해 3/31), 서로 다른 지급월을 가정.
+// https://www.nenkin.go.jp/service/kounen/hokenryo/hoshu/20141203.html
+const HEALTH_ANNUAL_BONUS_CAP = 5_730_000;
+const PENSION_MONTHLY_BONUS_CAP = 1_500_000;
+
 function calculateBonusSocialInsurance(
   bonus: number,
+  previousHealthStandardBonus: number,
   age: number,
   prefecture: string,
 ) {
@@ -403,17 +481,22 @@ function calculateBonusSocialInsurance(
   }
 
   const standardBonus = getStandardBonus(bonus);
+  const healthStandardBonus = Math.min(
+    standardBonus,
+    Math.max(0, HEALTH_ANNUAL_BONUS_CAP - previousHealthStandardBonus),
+  );
+  const pensionStandardBonus = Math.min(standardBonus, PENSION_MONTHLY_BONUS_CAP);
 
   const healthRate = HEALTH_RATES[prefecture] ?? HEALTH_RATES["東京"];
 
-  const healthInsurance = (standardBonus * healthRate) / 2;
+  const healthInsurance = (healthStandardBonus * healthRate) / 2;
 
   const nursingInsurance =
-    age >= 40 && age <= 64 ? (standardBonus * NURSING_RATE_2026) / 2 : 0;
+    age >= 40 && age <= 64 ? (healthStandardBonus * NURSING_RATE_2026) / 2 : 0;
 
-  const pension = (standardBonus * PENSION_RATE) / 2;
+  const pension = (pensionStandardBonus * PENSION_RATE) / 2;
 
-  const childCareSupport = (standardBonus * CHILD_CARE_SUPPORT_RATE) / 2;
+  const childCareSupport = (healthStandardBonus * CHILD_CARE_SUPPORT_RATE) / 2;
 
   return {
     healthInsurance,
@@ -487,7 +570,8 @@ function calculatePreviousYearSocialInsurance(
 
   const previousMonthlySalary = previousAnnualIncome / 12;
 
-  const standard = getStandardMonthlyRemuneration(previousMonthlySalary);
+  const standard = getHealthStandardMonthlyRemuneration(previousMonthlySalary);
+  const pensionStandard = getPensionStandardMonthlyRemuneration(previousMonthlySalary);
 
   const healthRate = HEALTH_RATES[prefecture] ?? HEALTH_RATES["東京"];
 
@@ -505,7 +589,7 @@ function calculatePreviousYearSocialInsurance(
   const nursingInsurance =
     age >= 40 && age <= 64 ? ((standard * NURSING_RATE_2025) / 2) * 12 : 0;
 
-  const pension = ((standard * PENSION_RATE) / 2) * 12;
+  const pension = ((pensionStandard * PENSION_RATE) / 2) * 12;
 
   const employmentInsurance =
     previousAnnualIncome * EMPLOYMENT_INSURANCE_RATE_2025;
@@ -676,6 +760,11 @@ function calculateResidentTax(
  */
 
 export function calculateSalary(input: SalaryInput): SalaryResult {
+  const errors = validateSalaryInput(input);
+  if (Object.keys(errors).length > 0) {
+    throw new RangeError(Object.values(errors).join(" "));
+  }
+
   const {
     monthlySalary,
     annualBonus,
@@ -721,13 +810,19 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
   let bonusPension = 0;
   let bonusChildCare = 0;
 
+  let accumulatedHealthStandardBonus = 0;
   for (let i = 0; i < bonusPayments; i++) {
     const bonusInsurance = calculateBonusSocialInsurance(
       bonusPerPayment,
+      accumulatedHealthStandardBonus,
       age,
       prefecture,
     );
 
+    accumulatedHealthStandardBonus = Math.min(
+      HEALTH_ANNUAL_BONUS_CAP,
+      accumulatedHealthStandardBonus + getStandardBonus(bonusPerPayment),
+    );
     bonusHealth += bonusInsurance.healthInsurance;
 
     bonusNursing += bonusInsurance.nursingInsurance;
