@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import {
   calculateSalary,
@@ -23,6 +23,7 @@ function Input({
   max,
   step = 10000,
   error,
+  descriptionId,
 }: {
   label: string;
   value: number;
@@ -32,13 +33,25 @@ function Input({
   max?: number;
   step?: number;
   error?: string;
+  descriptionId?: string;
 }) {
+  const id = useId();
+  const errorId = `${id}-error`;
+  const suffixId = `${id}-suffix`;
+  const describedBy =
+    [suffix ? suffixId : undefined, descriptionId, error ? errorId : undefined]
+      .filter(Boolean)
+      .join(" ") || undefined;
+
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700">{label}</label>
 
       <div className="mt-2 flex items-center gap-2">
         <input
+          id={id}
+          aria-describedby={describedBy}
+          aria-invalid={error ? true : undefined}
           type="number"
           value={Number.isFinite(value) ? value : ""}
           min={min}
@@ -49,10 +62,10 @@ function Input({
         />
 
         {suffix && (
-          <span className="whitespace-nowrap text-gray-500">{suffix}</span>
+          <span id={suffixId} className="whitespace-nowrap text-gray-500">{suffix}</span>
         )}
       </div>
-      {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
+      {error && <p id={errorId} className="mt-2 text-sm text-red-700">{error}</p>}
     </div>
   );
 }
@@ -84,6 +97,17 @@ function ResultRow({
 }
 
 export default function SalaryCalculator() {
+  const id = useId();
+  const bonusDescriptionId = `${id}-bonus-description`;
+  const ageId = `${id}-age`;
+  const ageDescriptionId = `${ageId}-description`;
+  const ageErrorId = `${ageId}-error`;
+  const ageSuffixId = `${ageId}-suffix`;
+  const prefectureId = `${id}-prefecture`;
+  const prefectureDescriptionId = `${prefectureId}-description`;
+  const prefectureErrorId = `${prefectureId}-error`;
+  const previousIncomeDescriptionId = `${id}-previous-income-description`;
+
   const [monthlySalary, setMonthlySalary] = useState(300000);
 
   const [annualBonus, setAnnualBonus] = useState(0);
@@ -147,6 +171,7 @@ export default function SalaryCalculator() {
 
           <Input
             label="연간 보너스"
+            descriptionId={bonusDescriptionId}
             value={annualBonus}
             onChange={setAnnualBonus}
             error={errors.annualBonus}
@@ -157,6 +182,7 @@ export default function SalaryCalculator() {
           {annualBonus > 0 && (
             <Input
               label="보너스 지급 횟수"
+              descriptionId={bonusDescriptionId}
               value={bonusPayments}
               onChange={setBonusPayments}
               error={errors.bonusPayments}
@@ -167,7 +193,7 @@ export default function SalaryCalculator() {
             />
           )}
 
-          <p className="text-xs leading-5 text-gray-500">
+          <p id={bonusDescriptionId} className="text-xs leading-5 text-gray-500">
             보너스는 같은 보험연도(4월 1일~다음해 3월 31일)에 서로 다른 달에
             같은 금액으로 지급된다고 가정합니다. 건강보험 상여 상한은 해당
             보험연도 누계 573만 엔, 후생연금 상여 상한은 월 150만 엔입니다.
@@ -176,12 +202,15 @@ export default function SalaryCalculator() {
           </p>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor={ageId} className="block text-sm font-medium text-gray-700">
               나이
             </label>
 
             <div className="mt-2 flex items-center gap-2">
               <input
+                id={ageId}
+                aria-describedby={`${ageSuffixId} ${ageDescriptionId}${errors.age ? ` ${ageErrorId}` : ""}`}
+                aria-invalid={errors.age ? true : undefined}
                 type="number"
                 value={Number.isFinite(age) ? age : ""}
                 min={18}
@@ -190,21 +219,24 @@ export default function SalaryCalculator() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 text-right text-lg outline-none focus:border-gray-700 focus:ring-2 focus:ring-gray-200"
               />
 
-              <span className="text-gray-500">세</span>
+              <span id={ageSuffixId} className="text-gray-500">세</span>
             </div>
-            {errors.age && <p className="mt-2 text-sm text-red-700">{errors.age}</p>}
+            {errors.age && <p id={ageErrorId} className="mt-2 text-sm text-red-700">{errors.age}</p>}
 
-            <p className="mt-2 text-xs leading-5 text-gray-500">
+            <p id={ageDescriptionId} className="mt-2 text-xs leading-5 text-gray-500">
               40~64세는 개호보험료가 추가됩니다.
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor={prefectureId} className="block text-sm font-medium text-gray-700">
               거주 지역
             </label>
 
             <select
+              id={prefectureId}
+              aria-describedby={`${prefectureDescriptionId}${errors.prefecture ? ` ${prefectureErrorId}` : ""}`}
+              aria-invalid={errors.prefecture ? true : undefined}
               value={prefecture}
               onChange={(e) => setPrefecture(e.target.value)}
               className="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-lg outline-none focus:border-gray-700 focus:ring-2 focus:ring-gray-200"
@@ -215,9 +247,9 @@ export default function SalaryCalculator() {
                 </option>
               ))}
             </select>
-            {errors.prefecture && <p className="mt-2 text-sm text-red-700">{errors.prefecture}</p>}
+            {errors.prefecture && <p id={prefectureErrorId} className="mt-2 text-sm text-red-700">{errors.prefecture}</p>}
 
-            <p className="mt-2 text-xs leading-5 text-gray-500">
+            <p id={prefectureDescriptionId} className="mt-2 text-xs leading-5 text-gray-500">
               협회けんぽ 가입자를 기준으로 계산합니다. 건강보험조합 가입자는
               실제 금액이 다를 수 있습니다.
             </p>
@@ -236,6 +268,7 @@ export default function SalaryCalculator() {
           <div>
             <Input
               label="전년도 연봉"
+              descriptionId={previousIncomeDescriptionId}
               value={previousAnnualIncome}
               onChange={setPreviousAnnualIncome}
               error={errors.previousAnnualIncome}
@@ -243,7 +276,7 @@ export default function SalaryCalculator() {
               step={10000}
             />
 
-            <p className="mt-2 text-xs leading-5 text-gray-500">
+            <p id={previousIncomeDescriptionId} className="mt-2 text-xs leading-5 text-gray-500">
               주민세는 기본적으로 전년도 소득을 기준으로 계산되기 때문에
               입력합니다.
             </p>
