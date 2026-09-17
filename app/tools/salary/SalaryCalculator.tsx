@@ -6,6 +6,7 @@ import {
   calculateSalary,
   PREFECTURES,
   validateSalaryInput,
+  type SalaryInput,
   type SalaryInputErrors,
   type SalaryResult,
 } from "@/lib/salary";
@@ -123,19 +124,30 @@ export default function SalaryCalculator() {
   const [previousAnnualIncome, setPreviousAnnualIncome] = useState(3600000);
 
   const [result, setResult] = useState<SalaryResult | null>(null);
+  const [lastCalculatedInput, setLastCalculatedInput] = useState<SalaryInput | null>(null);
   const [errors, setErrors] = useState<SalaryInputErrors>({});
 
+  const input: SalaryInput = {
+    monthlySalary,
+    annualBonus,
+    // 보너스가 없으면 숨겨진 횟수 입력은 계산에 사용하지 않습니다.
+    bonusPayments: annualBonus === 0 ? 0 : bonusPayments,
+    age,
+    prefecture,
+    dependents,
+    previousAnnualIncome,
+  };
+  const isStale = lastCalculatedInput !== null && (
+    input.monthlySalary !== lastCalculatedInput.monthlySalary ||
+    input.annualBonus !== lastCalculatedInput.annualBonus ||
+    input.bonusPayments !== lastCalculatedInput.bonusPayments ||
+    input.age !== lastCalculatedInput.age ||
+    input.prefecture !== lastCalculatedInput.prefecture ||
+    input.dependents !== lastCalculatedInput.dependents ||
+    input.previousAnnualIncome !== lastCalculatedInput.previousAnnualIncome
+  );
+
   function handleCalculate() {
-    const input = {
-      monthlySalary,
-      annualBonus,
-      // 보너스가 없으면 숨겨진 횟수 입력은 계산에 사용하지 않습니다.
-      bonusPayments: annualBonus === 0 ? 0 : bonusPayments,
-      age,
-      prefecture,
-      dependents,
-      previousAnnualIncome,
-    };
     const inputErrors = validateSalaryInput(input);
     setErrors(inputErrors);
     if (Object.keys(inputErrors).length > 0) return;
@@ -143,6 +155,7 @@ export default function SalaryCalculator() {
     const calculated = calculateSalary(input);
 
     setResult(calculated);
+    setLastCalculatedInput(input);
   }
 
   return (
@@ -296,8 +309,17 @@ export default function SalaryCalculator() {
       {result && (
         <div className="space-y-6">
           <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div role="status">
+              {isStale && (
+                <p className="border-b border-amber-200 bg-amber-50 px-6 py-4 text-sm font-medium text-amber-900">
+                  입력값이 변경되었습니다. 다시 계산해주세요.
+                </p>
+              )}
+            </div>
             <div className="bg-gray-900 px-6 py-10 text-center text-white">
-              <p className="text-sm text-gray-300">예상 월 실수령액</p>
+              <p className="text-sm text-gray-300">
+                {isStale ? "이전 입력 기준 월 실수령액" : "예상 월 실수령액"}
+              </p>
 
               <p className="mt-3 text-4xl font-bold tracking-tight">
                 ¥{formatYen(result.monthlyTakeHome)}
