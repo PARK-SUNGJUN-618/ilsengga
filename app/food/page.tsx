@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SITE_URL } from "@/lib/site";
+
+const description =
+  "일본 메뉴 도감에서 현재 제공 중인 스시 메뉴를 만나보세요. 일본 초밥집의 메뉴 이름과 읽는 법, 한국어 뜻을 확인할 수 있습니다.";
 
 export const metadata: Metadata = {
   title: "일본 메뉴 도감",
-  description:
-    "일본 식당에서 자주 볼 수 있는 음식 메뉴를 일본어와 한국어로 쉽게 확인해보세요. 스시, 라멘, 야키니쿠, 이자카야 메뉴 등을 정리했습니다.",
+  description,
+  alternates: {
+    canonical: `${SITE_URL}/food`,
+  },
+  openGraph: {
+    title: "일본 메뉴 도감 | 일생가",
+    description,
+    url: `${SITE_URL}/food`,
+    siteName: "일생가",
+    locale: "ko_KR",
+    type: "website",
+  },
 
   keywords: [
     "일본 메뉴",

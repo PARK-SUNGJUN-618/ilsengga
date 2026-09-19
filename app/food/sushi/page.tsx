@@ -1,11 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { sushiItems } from "@/data/sushi";
+import { SITE_URL } from "@/lib/site";
+
+const description =
+  "일본 초밥집에서 자주 볼 수 있는 스시 메뉴를 일본어, 읽는 법, 한국어 뜻과 함께 알아보세요. 마구로, 사몬, 엔가와, 가리비, 연어알, 성게알 등을 정리했습니다.";
 
 export const metadata: Metadata = {
   title: "일본 스시 메뉴 도감",
-  description:
-    "일본 초밥집에서 자주 볼 수 있는 스시 메뉴를 일본어, 읽는 법, 한국어 뜻과 함께 알아보세요. 마구로, 사몬, 엔가와, 가리비, 연어알, 성게알 등을 정리했습니다.",
+  description,
+  alternates: {
+    canonical: `${SITE_URL}/food/sushi`,
+  },
+  openGraph: {
+    title: "일본 스시 메뉴 도감 | 일생가",
+    description,
+    url: `${SITE_URL}/food/sushi`,
+    siteName: "일생가",
+    locale: "ko_KR",
+    type: "website",
+  },
 
   keywords: [
     "일본 스시",
