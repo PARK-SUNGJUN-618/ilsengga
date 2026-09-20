@@ -2,6 +2,7 @@ export type SushiItem = {
   slug: string;
   japanese: string;
   reading: string;
+  koreanReading: string;
   korean: string;
   description: string;
   image?: string;
@@ -24,6 +25,7 @@ export const sushiItems: SushiItem[] = [
     image: "/images/sushi/maguro.png",
     japanese: "マグロ",
     reading: "まぐろ",
+    koreanReading: "마구로",
     korean: "참치",
     description:
       "일본 초밥집에서 가장 대표적으로 볼 수 있는 초밥 중 하나입니다. 부위에 따라 맛과 지방 함량이 크게 달라집니다.",
@@ -44,6 +46,7 @@ export const sushiItems: SushiItem[] = [
     image: "/images/sushi/salmon.png",
     japanese: "サーモン",
     reading: "さーもん",
+    koreanReading: "사몬",
     korean: "연어",
     description:
       "부드럽고 기름진 맛이 특징인 연어 초밥입니다. 일본 초밥을 처음 먹는 사람도 비교적 부담 없이 먹기 좋습니다.",
@@ -64,6 +67,7 @@ export const sushiItems: SushiItem[] = [
     image: "/images/sushi/engawa.png",
     japanese: "えんがわ",
     reading: "えんがわ",
+    koreanReading: "엔가와",
     korean: "엔가와",
     description:
       "광어 또는 가자미의 지느러미 주변에 있는 살입니다. 쫀득한 식감과 특유의 기름진 맛이 특징입니다.",
@@ -84,6 +88,7 @@ export const sushiItems: SushiItem[] = [
     image: "/images/sushi/hotate.png",
     japanese: "ほたて",
     reading: "ほたて",
+    koreanReading: "호타테",
     korean: "가리비",
     description: "달콤하고 부드러운 맛이 특징인 가리비 초밥입니다.",
 
@@ -103,6 +108,7 @@ export const sushiItems: SushiItem[] = [
     image: "/images/sushi/ikura.png",
     japanese: "いくら",
     reading: "いくら",
+    koreanReading: "이쿠라",
     korean: "연어알",
     description:
       "연어의 알을 소금이나 간장 등으로 양념한 것으로, 톡톡 터지는 식감과 짭짤한 맛이 특징입니다.",
@@ -123,6 +129,7 @@ export const sushiItems: SushiItem[] = [
     image: "/images/sushi/uni.png",
     japanese: "うに",
     reading: "うに",
+    koreanReading: "우니",
     korean: "성게알",
     description:
       "성게의 생식소를 먹는 일본의 대표적인 고급 초밥 재료입니다. 크리미하고 진한 맛이 특징입니다.",
@@ -143,6 +150,7 @@ export const sushiItems: SushiItem[] = [
     image: "/images/sushi/tai.png",
     japanese: "たい",
     reading: "たい",
+    koreanReading: "타이",
     korean: "도미",
     description: "담백하고 깔끔한 맛이 특징인 도미 초밥입니다.",
 

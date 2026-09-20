@@ -64,9 +64,9 @@ export default function SushiPage() {
               href={`/food/sushi/${item.slug}`}
               className="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-md"
             >
-              <p className="text-sm text-gray-500">{item.reading}</p>
+              <p lang="ja" className="text-sm text-gray-500">{item.reading}</p>
 
-              <h2 className="mt-1 text-xl font-bold text-gray-900">
+              <h2 lang="ja" className="mt-1 text-xl font-bold text-gray-900">
                 {item.japanese}
               </h2>
 
