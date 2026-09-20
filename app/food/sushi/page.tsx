@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { sushiItems } from "@/data/sushi";
 import { SITE_URL } from "@/lib/site";
@@ -64,15 +65,31 @@ export default function SushiPage() {
               href={`/food/sushi/${item.slug}`}
               className="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-md"
             >
-              <p lang="ja" className="text-sm text-gray-500">{item.reading}</p>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-sm text-gray-500">{item.koreanReading}</p>
 
-              <h2 lang="ja" className="mt-1 text-xl font-bold text-gray-900">
-                {item.japanese}
-              </h2>
+                  <h2 lang="ja" className="mt-1 text-xl font-bold text-gray-900">
+                    {item.japanese}
+                  </h2>
 
-              <p className="mt-1 text-base font-medium text-gray-700">
-                {item.korean}
-              </p>
+                  <p className="mt-1 text-base font-medium text-gray-700">
+                    {item.korean}
+                  </p>
+                </div>
+
+                {item.image && (
+                  <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-50 sm:aspect-square sm:w-28 sm:shrink-0">
+                    <Image
+                      src={item.image}
+                      alt={`${item.korean} 초밥`}
+                      fill
+                      sizes="(min-width: 640px) 112px, calc(100vw - 74px)"
+                      className="object-contain"
+                    />
+                  </div>
+                )}
+              </div>
 
               <p className="mt-3 line-clamp-2 text-sm leading-6 text-gray-500">
                 {item.description}
