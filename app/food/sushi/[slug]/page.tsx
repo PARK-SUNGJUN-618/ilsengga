@@ -106,15 +106,11 @@ export default async function SushiDetailPage({ params }: Props) {
 
           {/* 기본 정보 */}
           <header className="mt-8">
-            <p lang="ja" className="text-sm text-gray-500">{item.reading}</p>
+            <p className="text-sm text-gray-500">{item.koreanReading}</p>
 
             <h1 lang="ja" className="mt-1 text-4xl font-bold tracking-tight text-gray-900">
               {item.japanese}
             </h1>
-
-            <p className="mt-2 text-sm text-gray-500">
-              한글 읽는 법: {item.koreanReading}
-            </p>
 
             <p className="mt-2 text-2xl font-semibold text-gray-700">
               {item.korean}

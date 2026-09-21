@@ -68,7 +68,7 @@ export const sushiItems: SushiItem[] = [
     japanese: "えんがわ",
     reading: "えんがわ",
     koreanReading: "엔가와",
-    korean: "엔가와",
+    korean: "광어·가자미 지느러미살",
     description:
       "광어 또는 가자미의 지느러미 주변에 있는 살입니다. 쫀득한 식감과 특유의 기름진 맛이 특징입니다.",
 
