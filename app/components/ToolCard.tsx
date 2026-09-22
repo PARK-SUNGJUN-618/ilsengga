@@ -33,9 +33,11 @@ export default function ToolCard({
         )}
       </div>
 
-      <div className="mt-4 text-sm font-medium text-gray-700">
-        사용해보기 →
-      </div>
+      {href !== "/coming-soon" && (
+        <div className="mt-4 text-sm font-medium text-gray-700">
+          사용해보기 →
+        </div>
+      )}
     </>
   );
 
