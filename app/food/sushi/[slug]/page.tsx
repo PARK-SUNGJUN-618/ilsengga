@@ -96,6 +96,7 @@ export default async function SushiDetailPage({ params }: Props) {
                 src={item.image}
                 alt={`${item.korean} 초밥`}
                 fill
+                loading="eager"
                 sizes="(max-width: 768px) calc(100vw - 32px), 736px"
                 className="object-contain"
               />
