@@ -22,7 +22,7 @@ export default function ComingSoonPage() {
         </div>
 
         <div className="mt-8 rounded-xl border bg-white p-6">
-          <p className="text-gray-500">🚧 이 기능은 준비 중입니다.🚧</p>
+          <p className="text-gray-500">🚧🚧 이 기능은 준비 중입니다.🚧🚧</p>
         </div>
       </div>
     </main>
