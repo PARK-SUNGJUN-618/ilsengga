@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { appsContentUpdatedAt } from "@/data/apps";
+import { contentUpdatedAt } from "@/data/japan-life-checklist";
 import { sushiItems } from "@/data/sushi";
 import { SITE_URL } from "@/lib/site";
 
@@ -8,6 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: SITE_URL,
       lastModified: new Date(),
+    },
+
+    // 일본 생활 시작 체크리스트
+    {
+      url: `${SITE_URL}/checklist/japan-life`,
+      lastModified: contentUpdatedAt,
     },
 
     // 일본 필수 앱

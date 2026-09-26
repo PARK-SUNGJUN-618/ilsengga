@@ -28,6 +28,13 @@ const categories = [
     description: "일본에서 생활하면서 자주 필요한 계산과 정보입니다.",
     tools: [
       {
+        title: "일본 생활 시작 체크리스트",
+        description:
+          "입국 전부터 정착 초기까지 필요한 준비를 확인하고 완료한 항목을 체크해보세요.",
+        href: "/checklist/japan-life",
+        badge: "NEW",
+      },
+      {
         title: "일본 필수 앱",
         description:
           "일본 여행·생활에 필요한 앱과 한국 휴대폰 사용 조건을 확인하세요.",
