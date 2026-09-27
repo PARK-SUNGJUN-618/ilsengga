@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { appsContentUpdatedAt } from "@/data/apps";
 import { contentUpdatedAt } from "@/data/japan-life-checklist";
+import { contentUpdatedAt as travelContentUpdatedAt } from "@/data/japan-travel-checklist";
 import { sushiItems } from "@/data/sushi";
 import { SITE_URL } from "@/lib/site";
 
@@ -15,6 +16,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${SITE_URL}/checklist/japan-life`,
       lastModified: contentUpdatedAt,
+    },
+
+    // 일본 여행 준비 체크리스트
+    {
+      url: `${SITE_URL}/checklist/japan-travel`,
+      lastModified: travelContentUpdatedAt,
     },
 
     // 일본 필수 앱

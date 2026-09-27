@@ -94,6 +94,13 @@ const categories = [
     description: "일본 여행을 조금 더 편하게 만들어주는 도구입니다.",
     tools: [
       {
+        title: "일본 여행 준비 체크리스트",
+        description:
+          "출국 전부터 일본 도착 후까지 필요한 준비사항을 하나씩 확인해보세요.",
+        href: "/checklist/japan-travel",
+        badge: "NEW",
+      },
+      {
         title: "일본 여행 예산 계산기",
         description:
           "항공권, 숙박, 교통비 등을 입력해서 여행 예산을 계산해보세요.",

@@ -1,19 +1,5 @@
-export type ChecklistSource = { name: string; url: string };
-export type ChecklistItem = {
-  id: string;
-  title: string;
-  description: string;
-  conditionNote?: string;
-  details?: string[];
-  sources?: ChecklistSource[];
-  lastVerified?: string;
-};
-export type ChecklistSection = {
-  id: string;
-  title: string;
-  description?: string;
-  items: ChecklistItem[];
-};
+import type { ChecklistSection, ChecklistSource } from "@/data/checklist";
+export type { ChecklistSource, ChecklistItem, ChecklistSection } from "@/data/checklist";
 
 export const contentUpdatedAt = "2026-09-26";
 const guidebook: ChecklistSource = {
