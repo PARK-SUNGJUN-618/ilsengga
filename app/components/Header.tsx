@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header className="border-b bg-white">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="text-xl font-bold tracking-tight">
+        <Link href="/" className="inline-flex min-h-11 items-center rounded px-2 text-xl font-bold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gray-900">
           일생가
         </Link>
 

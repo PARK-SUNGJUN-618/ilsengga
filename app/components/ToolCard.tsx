@@ -44,7 +44,7 @@ export default function ToolCard({
   return (
     <Link
       href={href}
-      className="group block rounded-xl border bg-white p-5 transition hover:-translate-y-1 hover:border-gray-300 hover:shadow-md"
+      className={`group block rounded-xl border bg-white p-5 transition hover:-translate-y-1 hover:border-gray-300 hover:shadow-md${href !== "/coming-soon" ? " focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gray-900" : ""}`}
     >
       {content}
     </Link>
