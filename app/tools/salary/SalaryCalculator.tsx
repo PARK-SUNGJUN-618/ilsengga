@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import Link from "next/link";
 
 import {
   calculateSalary,
@@ -331,6 +332,14 @@ export default function SalaryCalculator() {
             </div>
 
             <div className="p-6">
+              {!isStale && (
+                <div className="mb-6 rounded-xl bg-gray-50 p-4">
+                  <Link href={`/tools/living-cost?income=${result.monthlyTakeHome}`} className="inline-flex min-h-11 items-center rounded text-sm font-bold text-gray-900 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4">
+                    이 실수령액으로 생활비 계산하기 →
+                  </Link>
+                  <p className="mt-2 text-xs leading-5 text-gray-500">보너스를 포함한 연간 실수령액을 12개월로 나눈 월평균 기준입니다.</p>
+                </div>
+              )}
               <div className="space-y-4">
                 <ResultRow label="연간 총급여" value={result.annualIncome} />
 

@@ -62,7 +62,8 @@ const categories = [
       {
         title: "일본 생활비 계산기",
         description: "월세와 생활비를 입력해서 한 달 지출을 계산해보세요.",
-        href: "/coming-soon",
+        href: "/tools/living-cost",
+        badge: "NEW",
       },
       {
         title: "일본 이사 비용 계산기",
