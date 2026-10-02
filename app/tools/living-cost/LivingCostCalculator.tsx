@@ -28,8 +28,8 @@ function MoneyInput({ label, value, onChange, placeholder, description, error, r
   );
 }
 
-function ResultRow({ label, value }: { label: string; value: string }) {
-  return <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"><dt className="text-sm text-gray-600">{label}</dt><dd className="min-w-0 break-all text-right font-medium text-gray-900">{value}</dd></div>;
+function ResultRow({ label, value, secondary = false }: { label: string; value: string; secondary?: boolean }) {
+  return <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"><dt className="text-sm text-gray-600">{label}</dt><dd className={`min-w-0 break-all text-right ${secondary ? "text-sm text-gray-600" : "font-medium text-gray-900"}`}>{value}</dd></div>;
 }
 
 export default function LivingCostCalculator({ initialIncome }: { initialIncome?: number }) {
@@ -92,11 +92,12 @@ export default function LivingCostCalculator({ initialIncome }: { initialIncome?
               <ResultRow label="월 실수령액" value={yen(result.income)} />
               <ResultRow label="월 생활비" value={yen(result.monthlyExpenses)} />
               {result.savingsRatio !== null && result.balance >= 0 && <ResultRow label="저축 가능 비율" value={percent(result.savingsRatio)} />}
-              {result.expenseRatio !== null && <ResultRow label="수입 대비 지출" value={percent(result.expenseRatio)} />}
-              <ResultRow label="연간 예상 생활비" value={yen(result.annualExpenses)} />
-              <ResultRow label={result.annualBalance < 0 ? "연간 예상 부족액" : "연간 예상 잔액"} value={yen(Math.abs(result.annualBalance))} />
             </dl>
             {result.income === 0 && <p className="text-sm leading-6 text-gray-600">수입이 0엔이므로 비율을 계산하지 않습니다.</p>}
+            <dl className="space-y-3 border-t border-gray-200 pt-4">
+              <ResultRow label="연간 예상 생활비" value={yen(result.annualExpenses)} secondary />
+              <ResultRow label={result.annualBalance < 0 ? "연간 예상 부족액" : "연간 예상 잔액"} value={yen(Math.abs(result.annualBalance))} secondary />
+            </dl>
             <div className="border-t border-gray-200 pt-6">
               <h3 className="font-bold text-gray-900">지출 구성</h3>
               {result.monthlyExpenses === 0 ? <p className="mt-3 text-sm text-gray-500">지출 없음</p> : (
