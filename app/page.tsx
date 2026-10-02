@@ -117,7 +117,8 @@ const categories = [
       {
         title: "이직 연봉 비교",
         description: "현재 직장과 이직 후 연봉을 비교해보세요.",
-        href: "/coming-soon",
+        href: "/tools/job-change",
+        badge: "NEW",
       },
       {
         title: "일본 잔업수당 계산기",

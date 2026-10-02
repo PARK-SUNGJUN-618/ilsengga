@@ -39,6 +39,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${SITE_URL}/tools/living-cost`,
       lastModified: new Date(),
     },
+    {
+      url: `${SITE_URL}/tools/job-change`,
+      lastModified: new Date(),
+    },
 
     // 메뉴 도감
     {
