@@ -59,7 +59,7 @@ function ConditionFields({ title, value, errors, onChange }: {
   );
 }
 
-function ComparisonRow({ label, current, after }: { label: string; current: number; after: number }) {
+function ComparisonRow({ label, current, after, emphasizeDifference = false }: { label: string; current: number; after: number; emphasizeDifference?: boolean }) {
   return (
     <div className="min-w-0">
       <h3 className="text-sm font-bold text-gray-900">{label}</h3>
@@ -71,7 +71,7 @@ function ComparisonRow({ label, current, after }: { label: string; current: numb
         ].map((item) => (
           <div key={item.label} className="flex min-w-0 flex-wrap items-baseline justify-between gap-x-3 gap-y-1 sm:block">
             <dt className="text-sm text-gray-500">{item.label}</dt>
-            <dd className="min-w-0 break-all text-right font-medium text-gray-900 sm:mt-1 sm:text-left">{item.value}</dd>
+            <dd className={`min-w-0 break-all text-right text-gray-900 sm:mt-1 sm:text-left ${emphasizeDifference && item.label === "차이" ? "font-semibold" : "font-medium"}`}>{item.value}</dd>
           </div>
         ))}
       </dl>
@@ -126,7 +126,7 @@ export default function JobChangeCalculator() {
           <p className="text-sm leading-6 text-gray-500">같은 사람의 두 급여 조건을 비교합니다. 아래 정보는 양쪽에 동일하게 적용됩니다.</p>
           <NumberInput label="나이" value={input.common.age} onChange={(age) => update("common", { ...input.common, age })} error={errors.common.age} suffix="세" min={18} max={100} description="40~64세는 개호보험료가 추가됩니다." />
           <NumberInput label="부양가족 수" value={input.common.dependents} onChange={(dependents) => update("common", { ...input.common, dependents })} error={errors.common.dependents} suffix="명" />
-          <NumberInput label="전년도 연봉" value={input.common.previousAnnualIncome} onChange={(previousAnnualIncome) => update("common", { ...input.common, previousAnnualIncome })} error={errors.common.previousAnnualIncome} description="주민세 추정에 사용합니다. 현재·이직 후 모두 같은 전년도 연봉으로 계산합니다." />
+          <NumberInput label="전년도 연봉" value={input.common.previousAnnualIncome} onChange={(previousAnnualIncome) => update("common", { ...input.common, previousAnnualIncome })} error={errors.common.previousAnnualIncome} description="주민세와 그 계산에 필요한 전년도 사회보험료 추정에 사용됩니다. 현재·이직 후 조건 모두 같은 전년도 연봉을 기준으로 비교합니다." />
         </fieldset>
         <div className="grid gap-8 border-t border-gray-200 pt-6 md:grid-cols-2">
           <ConditionFields title="현재 조건" value={input.current} errors={errors.current} onChange={(value) => update("current", value)} />
@@ -143,12 +143,13 @@ export default function JobChangeCalculator() {
             <h2 className="text-sm text-gray-300">{isStale ? "이전 입력 기준 · " : ""}연간 예상 실수령액 {result.difference.annualTakeHome > 0 ? "증가" : result.difference.annualTakeHome < 0 ? "감소" : "동일"}</h2>
             <p className="mt-3 break-all text-3xl font-bold tracking-tight sm:text-4xl">{signedYen(result.difference.annualTakeHome)}</p>
             <p className="mt-3 text-sm text-gray-300">월평균 차이 <span className="break-all">{signedYen(result.difference.monthlyTakeHome)}</span></p>
+            <p className="mt-3 text-xs leading-5 text-gray-400">세금·사회보험을 반영한 예상 실수령액 기준</p>
           </div>
           <div className="space-y-6 p-5 sm:p-6">
-            <ComparisonRow label="예상 연 실수령액" current={result.current.annualTakeHome} after={result.after.annualTakeHome} />
-            <ComparisonRow label="예상 월평균 실수령액" current={result.current.monthlyTakeHome} after={result.after.monthlyTakeHome} />
+            <ComparisonRow label="예상 연 실수령액" current={result.current.annualTakeHome} after={result.after.annualTakeHome} emphasizeDifference />
+            <ComparisonRow label="예상 월평균 실수령액" current={result.current.monthlyTakeHome} after={result.after.monthlyTakeHome} emphasizeDifference />
             <div className="border-t border-gray-200 pt-6">
-              <ComparisonRow label="세전 예상 연봉" current={result.current.annualIncome} after={result.after.annualIncome} />
+              <ComparisonRow label="세전 예상 연봉" current={result.current.annualIncome} after={result.after.annualIncome} emphasizeDifference />
               <p className="mt-3 break-all text-sm text-gray-600">{result.annualIncomeChangeRate === null ? "기준 연봉이 0엔이므로 증감률을 계산하지 않습니다." : `현재 대비 증감률 ${percent(result.annualIncomeChangeRate)}`}</p>
             </div>
             <details className="border-t border-gray-200 pt-4">
