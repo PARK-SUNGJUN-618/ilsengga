@@ -30,6 +30,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${item.japanese} ${item.korean} - 일본 스시 메뉴`,
     description: `${item.japanese}(${item.reading})는 한국어로 ${item.korean}입니다. 일본 스시집에서 어떤 음식인지, 맛과 식감을 알아보세요.`,
+    alternates: {
+      canonical: `${SITE_URL}/food/sushi/${item.slug}`,
+    },
 
     keywords: [
       item.japanese,
@@ -130,6 +133,11 @@ export default async function SushiDetailPage({ params }: Props) {
           {/* 맛 정보 */}
           <section className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
             <h2 className="text-lg font-bold text-gray-900">맛과 식감</h2>
+            <p className="mt-3 text-sm leading-6 text-gray-500">
+              별점은 풍미의 진함, 지방감, 씹는 식감과 탄력의 강도를 나타내는
+              주관적인 참고 평가입니다. 메뉴의 우열을 뜻하지 않으며, 개인 취향과
+              조리 방식에 따라 다르게 느껴질 수 있습니다.
+            </p>
 
             <div className="mt-5 space-y-4">
               <div className="flex items-center justify-between">

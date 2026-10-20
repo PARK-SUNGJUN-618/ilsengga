@@ -5,7 +5,7 @@ import { sushiItems } from "@/data/sushi";
 import { SITE_URL } from "@/lib/site";
 
 const description =
-  "일본 초밥집에서 자주 볼 수 있는 스시 메뉴를 일본어, 읽는 법, 한국어 뜻과 함께 알아보세요. 마구로, 사몬, 엔가와, 가리비, 연어알, 성게알 등을 정리했습니다.";
+  "일본 스시 메뉴 25종의 일본어 이름, 읽는 법, 한국어 뜻을 알아보세요. 참치 부위별 초밥부터 새우, 계란말이, 유부초밥까지 메뉴를 고를 때 도움이 되는 맛과 식감을 정리했습니다.";
 
 export const metadata: Metadata = {
   title: "일본 스시 메뉴 도감",
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
     "일본 초밥 메뉴",
     "스시 일본어",
     "일본 초밥 종류",
-    "엔가와",
-    "마구로",
+    "스시 읽는 법",
+    "스시 한국어 뜻",
   ],
 };
 
