@@ -166,6 +166,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "akami",
+    image: "/images/sushi/akami.png",
     japanese: "赤身",
     reading: "あかみ",
     koreanReading: "아카미",
@@ -178,6 +179,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "chutoro",
+    image: "/images/sushi/chutoro.png",
     japanese: "中トロ",
     reading: "ちゅうとろ",
     koreanReading: "츄토로",
@@ -190,6 +192,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "otoro",
+    image: "/images/sushi/otoro.png",
     japanese: "大トロ",
     reading: "おおとろ",
     koreanReading: "오토로",
@@ -202,6 +205,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "bincho-maguro",
+    image: "/images/sushi/bincho-maguro.png",
     japanese: "びんちょうまぐろ",
     reading: "びんちょうまぐろ",
     koreanReading: "빈초마구로",
@@ -214,6 +218,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "hamachi",
+    image: "/images/sushi/hamachi.png",
     japanese: "はまち",
     reading: "はまち",
     koreanReading: "하마치",
@@ -226,6 +231,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "buri",
+    image: "/images/sushi/buri.png",
     japanese: "ぶり",
     reading: "ぶり",
     koreanReading: "부리",
@@ -238,6 +244,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "aji",
+    image: "/images/sushi/aji.png",
     japanese: "あじ",
     reading: "あじ",
     koreanReading: "아지",
@@ -250,6 +257,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "saba",
+    image: "/images/sushi/saba.png",
     japanese: "さば",
     reading: "さば",
     koreanReading: "사바",
@@ -262,6 +270,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "shime-saba",
+    image: "/images/sushi/shime-saba.png",
     japanese: "しめさば",
     reading: "しめさば",
     koreanReading: "시메사바",
@@ -274,6 +283,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "iwashi",
+    image: "/images/sushi/iwashi.png",
     japanese: "いわし",
     reading: "いわし",
     koreanReading: "이와시",
@@ -286,6 +296,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "amaebi",
+    image: "/images/sushi/amaebi.png",
     japanese: "甘エビ",
     reading: "あまえび",
     koreanReading: "아마에비",
@@ -298,6 +309,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "ebi",
+    image: "/images/sushi/ebi.png",
     japanese: "えび",
     reading: "えび",
     koreanReading: "에비",
@@ -310,6 +322,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "ika",
+    image: "/images/sushi/ika.png",
     japanese: "いか",
     reading: "いか",
     koreanReading: "이카",
@@ -322,6 +335,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "tako",
+    image: "/images/sushi/tako.png",
     japanese: "たこ",
     reading: "たこ",
     koreanReading: "타코",
@@ -334,6 +348,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "unagi",
+    image: "/images/sushi/unagi.png",
     japanese: "うなぎ",
     reading: "うなぎ",
     koreanReading: "우나기",
@@ -346,6 +361,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "anago",
+    image: "/images/sushi/anago.png",
     japanese: "穴子",
     reading: "あなご",
     koreanReading: "아나고",
@@ -358,6 +374,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "tamago",
+    image: "/images/sushi/tamago.png",
     japanese: "たまご",
     reading: "たまご",
     koreanReading: "타마고",
@@ -370,6 +387,7 @@ export const sushiItems: SushiItem[] = [
   },
   {
     slug: "inari",
+    image: "/images/sushi/inari.png",
     japanese: "いなり",
     reading: "いなり",
     koreanReading: "이나리",
